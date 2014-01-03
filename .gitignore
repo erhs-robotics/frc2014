@@ -17,3 +17,4 @@ CMakeCache.txt
 *.json
 *.bak.xml
 *.ps
+nbproject/private/
