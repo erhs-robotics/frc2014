@@ -1,1 +1,1 @@
-cp dist/RemoteImage.jar ~/sunspotfrcsdk/tools/extensions/
+cp dist/RemoteImage.jar ~/Desktop/SmartDashboard/extensions/

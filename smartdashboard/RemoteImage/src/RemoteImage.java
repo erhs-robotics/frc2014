@@ -32,6 +32,7 @@ public class RemoteImage extends StaticWidget {
     private String url = "ftp://10.0.53.2/ni-rt/system/BinaryImage.png";
     private final Object lock = new Object();
     private boolean connected = false;
+    
 
     @Override
     public void init() {        
@@ -43,7 +44,7 @@ public class RemoteImage extends StaticWidget {
                 
                 synchronized (lock) {
                     try {
-                        image = ImageIO.read(new URL(url));
+                        image = (BufferedImage) ImageIO.read(new URL(url));
                         connected = true;
                     } catch (MalformedURLException ex) {
                         System.out.println("FATAL ERROR! Bad url");
@@ -70,9 +71,11 @@ public class RemoteImage extends StaticWidget {
     public void paint(Graphics g) {
         Dimension size = getSize();
         
+        
+        
         if (connected) {
             synchronized(lock) {
-                g.drawImage(image, 0, 0,size.width, size.height, this);        
+                g.drawImage(image, 0, 0, size.width / size.height * image.getHeight(), size.height / size.width * image.getWidth(), this);        
             }
         } else {
             g.setColor(Color.PINK);
