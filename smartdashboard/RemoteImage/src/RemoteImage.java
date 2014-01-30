@@ -29,10 +29,9 @@ import javax.swing.Timer;
 public class RemoteImage extends StaticWidget {
 
     BufferedImage image;
-    Timer timer;
-    private String url = "ftp://10.0.53.2/ni-rt/system/";   
+    Timer timer;       
     private boolean connected = false;
-    public final StringProperty imageName = new StringProperty(this, "Image Name", "BinaryImage.png");
+    public final StringProperty fileName = new StringProperty(this, "Image Name", "ftp://10.0.53.2/ni-rt/system/BinaryImage.png");
 
     @Override
     public void init() {        
@@ -44,7 +43,7 @@ public class RemoteImage extends StaticWidget {
                 
                 
                     try {
-                        image = ImageIO.read(new URL(url + imageName.getValue()));
+                        image = ImageIO.read(new URL(fileName.getValue()));
                         connected = true;
                     } catch (MalformedURLException ex) {
                         System.out.println("FATAL ERROR! Bad url");
