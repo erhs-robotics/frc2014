@@ -2,6 +2,7 @@
 import edu.wpi.first.smartdashboard.gui.StaticWidget;
 import edu.wpi.first.smartdashboard.gui.Widget;
 import edu.wpi.first.smartdashboard.properties.Property;
+import edu.wpi.first.smartdashboard.properties.StringProperty;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -30,8 +31,9 @@ public class RemoteImage extends StaticWidget {
 
     BufferedImage image;
     Timer timer;
-    private String url = "ftp://10.0.53.2/ni-rt/system/BinaryImage.png";   
+    private String url = "ftp://10.0.53.2/ni-rt/system/";   
     private boolean connected = false;
+    public final StringProperty imageName = new StringProperty(this, "Image Name", "BinaryImage.png");
 
     @Override
     public void init() {        
@@ -43,7 +45,7 @@ public class RemoteImage extends StaticWidget {
                 
                 
                     try {
-                        image = ImageIO.read(new URL(url));
+                        image = ImageIO.read(new URL(url + imageName.getValue()));
                         connected = true;
                     } catch (MalformedURLException ex) {
                         System.out.println("FATAL ERROR! Bad url");
