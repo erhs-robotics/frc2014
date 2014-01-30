@@ -30,8 +30,7 @@ public class RemoteImage extends StaticWidget {
 
     BufferedImage image;
     Timer timer;
-    private String url = "ftp://10.0.53.2/ni-rt/system/BinaryImage.png";
-    private final Object lock = new Object();
+    private String url = "ftp://10.0.53.2/ni-rt/system/BinaryImage.png";   
     private boolean connected = false;
 
     @Override
@@ -42,7 +41,7 @@ public class RemoteImage extends StaticWidget {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 
-                synchronized (lock) {
+                
                     try {
                         image = ImageIO.read(new URL(url));
                         connected = true;
@@ -53,7 +52,7 @@ public class RemoteImage extends StaticWidget {
                         Logger.getLogger(RemoteImage.class.getName()).log(Level.SEVERE, null, ex);
                         connected = false;
                     }
-                }        
+                      
                 
                 repaint();
             }
@@ -71,10 +70,8 @@ public class RemoteImage extends StaticWidget {
     public void paint(Graphics g) {
         Dimension size = getSize();
         
-        if (connected) {
-            synchronized(lock) {
+        if (connected) {            
                 g.drawImage(image, 0, 0,size.width, size.height, this);        
-            }
         } else {
             g.setColor(Color.PINK);
             g.setFont(new Font("Dialog", Font.PLAIN, 20));
