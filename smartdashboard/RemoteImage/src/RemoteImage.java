@@ -1,6 +1,5 @@
 
 import edu.wpi.first.smartdashboard.gui.StaticWidget;
-import edu.wpi.first.smartdashboard.gui.Widget;
 import edu.wpi.first.smartdashboard.properties.Property;
 import edu.wpi.first.smartdashboard.properties.StringProperty;
 import java.awt.Color;
