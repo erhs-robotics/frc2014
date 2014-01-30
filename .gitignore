@@ -18,3 +18,6 @@ CMakeCache.txt
 *.bak.xml
 *.ps
 nbproject/private/
+/smartdashboard/MessageConsole/nbproject/private/
+/smartdashboard/MessageConsole/dist/
+/smartdashboard/MessageConsole/build/
