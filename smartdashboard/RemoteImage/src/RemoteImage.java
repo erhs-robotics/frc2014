@@ -31,11 +31,8 @@ public class RemoteImage extends StaticWidget {
     BufferedImage image;
     Timer timer;       
     private boolean connected = false;
-<<<<<<< HEAD
-    
-=======
+
     public final StringProperty fileName = new StringProperty(this, "Image Name", "ftp://10.0.53.2/ni-rt/system/BinaryImage.png");
->>>>>>> 0967d09f4c086595f3e8366fe23c6886d2348c4f
 
     @Override
     public void init() {        
@@ -47,11 +44,8 @@ public class RemoteImage extends StaticWidget {
                 
                 
                     try {
-<<<<<<< HEAD
-                        image = (BufferedImage) ImageIO.read(new URL(url));
-=======
+
                         image = ImageIO.read(new URL(fileName.getValue()));
->>>>>>> 0967d09f4c086595f3e8366fe23c6886d2348c4f
                         connected = true;
                     } catch (MalformedURLException ex) {
                         System.out.println("FATAL ERROR! Bad url");
@@ -78,18 +72,9 @@ public class RemoteImage extends StaticWidget {
     @Override
     public void paint(Graphics g) {
         Dimension size = getSize();
-        
-<<<<<<< HEAD
-        
-        
-        if (connected) {
-            synchronized(lock) {
-                g.drawImage(image, 0, 0, size.width / size.height * image.getHeight(), size.height / size.width * image.getWidth(), this);        
-            }
-=======
+
         if (connected) {            
                 g.drawImage(image, 0, 0,size.width, size.height, this);        
->>>>>>> 0967d09f4c086595f3e8366fe23c6886d2348c4f
         } else {
             g.setColor(Color.PINK);
             g.setFont(new Font("Dialog", Font.PLAIN, 20));
