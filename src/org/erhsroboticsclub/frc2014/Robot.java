@@ -1,9 +1,6 @@
 package org.erhsroboticsclub.frc2014;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotDrive;
-import edu.wpi.first.wpilibj.SimpleRobot;
-import edu.wpi.first.wpilibj.Talon;
+import edu.wpi.first.wpilibj.*;
 import org.erhsroboticsclub.frc2014.utilities.Messenger;
 
 public class Robot extends SimpleRobot {
@@ -14,7 +11,7 @@ public class Robot extends SimpleRobot {
         Joystick stick;
         Messenger msg;
         RobotDrive drive;
-    
+        Gyro gyro;
     public void robotInit() {
         getWatchdog().kill();
         motor = new Talon(1);
@@ -24,6 +21,7 @@ public class Robot extends SimpleRobot {
         stick = new Joystick(1);
         msg = new Messenger();
         drive = new RobotDrive(motor, motor2, motor3, motor4);
+        gyro = new Gyro(1);
     }
         
     public void autonomous() {
@@ -31,7 +29,13 @@ public class Robot extends SimpleRobot {
     }
 
     public void operatorControl() {
-        
+        if (!stick.getRawButton(1)) {
+            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, gyro.getAngle());
+        }
+        else {
+            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), gyro.getAngle());
+        }
     }
+        
     
 }
