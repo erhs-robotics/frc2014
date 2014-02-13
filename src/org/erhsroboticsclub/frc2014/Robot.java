@@ -40,10 +40,18 @@ public class Robot extends SimpleRobot {
     }
 
     public void operatorControl() {
-        if (!stick.getRawButton(1)) {
-            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, gyro.getAngle());
-        } else {
-            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), gyro.getAngle());
+        while(isEnabled() && isOperatorControl()) {
+            if (!stick.getRawButton(1)) {
+                drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, gyro.getAngle());
+            } else {
+                drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), gyro.getAngle());
+            }
+        }
+    }
+
+    public void test() {
+        while(isEnabled() && isTest()) {
+            
         }
     }
     
