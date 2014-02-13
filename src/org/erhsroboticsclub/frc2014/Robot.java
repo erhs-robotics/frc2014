@@ -5,25 +5,34 @@ import org.erhsroboticsclub.frc2014.utilities.Messenger;
 
 public class Robot extends SimpleRobot {
 
-    Talon motor;
-    Talon motor2;
-    Talon motor3;
-    Talon motor4;
-    Joystick stick;
-    Messenger msg;
+    // Motors and motor control
+    Talon topLeftMotor, bottomLeftMotor, topRightMotor, bottomRightMotor;
     RobotDrive drive;
+    Joystick stick;
+    
+    // Sensor inputs
     Gyro gyro;
+    
+    // Utility classes
+    Messenger msg;
 
     public void robotInit() {
-        getWatchdog().kill();
-        motor = new Talon(1);
-        motor2 = new Talon(2);
-        motor3 = new Talon(3);
-        motor4 = new Talon(4);
-        stick = new Joystick(1);
+        // Motors and motor control
+        topLeftMotor     = new Talon(RobotMap.TOP_LEFT_MOTOR);
+        bottomLeftMotor  = new Talon(RobotMap.BOTTOM_LEFT_MOTOR);
+        topRightMotor    = new Talon(RobotMap.TOP_RIGHT_MOTOR);
+        bottomRightMotor = new Talon(RobotMap.BOTTOM_RIGHT_MOTOR);
+        drive = new RobotDrive(topLeftMotor, bottomLeftMotor, 
+                               topRightMotor, bottomRightMotor);
+        stick = new Joystick(RobotMap.DRIVE_JOYSTICK);
+        
+        // Sensor inputs
+        gyro = new Gyro(RobotMap.GYRO);
+        
+        // Utility classes
         msg = new Messenger();
-        drive = new RobotDrive(motor, motor2, motor3, motor4);
-        gyro = new Gyro(1);
+        
+        killSafety();
     }
 
     public void autonomous() {
@@ -36,6 +45,11 @@ public class Robot extends SimpleRobot {
         } else {
             drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), gyro.getAngle());
         }
+    }
+    
+    private void killSafety() {
+        getWatchdog().kill();
+        drive.setSafetyEnabled(false);
     }
 
 }
