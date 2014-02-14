@@ -50,8 +50,23 @@ public class Robot extends SimpleRobot {
     }
 
     public void test() {
+        final int SELECT = 0, DRIVE = 1, WINCH = 2, RELEASE = 3, COLLECTOR = 4;
+        String[] MODE = new String[5];
+        MODE[SELECT] = "Select"; MODE[DRIVE] = "Drive"; MODE[WINCH] = "Winch";
+        MODE[RELEASE] = "Release"; MODE[COLLECTOR] = "Collector";
+        int mode = 0;
+        
         while(isEnabled() && isTest()) {
-            
+            msg.printOnLn("DEBUG: " + MODE[mode], msg.LINE[0]);
+            switch(mode) {
+                // select mode
+                case SELECT:
+                    for(int i = 1; i < MODE.length; i++) {
+                        msg.printOnLn(i + ": " + MODE[i], msg.LINE[i]);
+                    }
+                    // TODO: Change the mode
+                    break;
+            }
         }
     }
     
