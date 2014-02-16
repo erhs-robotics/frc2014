@@ -47,12 +47,12 @@ public class Robot extends SimpleRobot {
     }
 
     public void test() {
-        final int SELECT = 0, DRIVE = 1, WINCH = 2, RELEASE = 3, COLLECTOR = 4;
+        final int SELECT = 0, DRIVE = 1, WINCH = 2, LATCH = 3, COLLECTOR = 4;
         String[] MODE = new String[5];
         MODE[SELECT] = "Select";
         MODE[DRIVE] = "Drive";
         MODE[WINCH] = "Winch";
-        MODE[RELEASE] = "Release";
+        MODE[LATCH] = "Latch";
         MODE[COLLECTOR] = "Collector";
         int mode = 0;
 
@@ -64,7 +64,21 @@ public class Robot extends SimpleRobot {
                     for (int i = 1; i < MODE.length; i++) {
                         msg.printOnLn(i + ": " + MODE[i], msg.LINE[i]);
                     }
-                    // TODO: Change the mode
+                    // TEST: Change the mode
+                    for (int i = 1; i < MODE.length; i++) {
+                        if (stick.getRawButton(i)) {
+                            mode = i;
+                        }
+                    }
+                    break;
+                case DRIVE:
+                    driveWithJoystick();
+                    break;
+                case WINCH:
+                    break;
+                case LATCH:
+                    break;
+                case COLLECTOR:
                     break;
             }
         }
