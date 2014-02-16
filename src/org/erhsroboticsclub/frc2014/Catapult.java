@@ -1,5 +1,5 @@
 package org.erhsroboticsclub.frc2014;
 
-public class Launcher {
+public class Catapult {
 //Pew pew.    
 }
