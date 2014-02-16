@@ -14,10 +14,13 @@ public class RobotMap {
     
     // Digital Input
     
-    // Analog 
+    // Analog Input
     public static final int GYRO = 1;
     
     // USB Input (Joysticks)
     public static final int DRIVE_JOYSTICK = 1;
+    
+    // Drive Joystick Buttons
+    public static final int NO_CHASSIS_ROTATION = 1;
     
 }
