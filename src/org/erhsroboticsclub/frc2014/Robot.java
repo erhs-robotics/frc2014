@@ -115,10 +115,11 @@ public class Robot extends SimpleRobot {
     private void testWinch() {
         if(stick.getRawButton(1)) {
             catapult.windWinch();
+        } else if(stick.getRawButton(2)) {
+            catapult.unwindWinch();
         } else {
-            
-        }
-        
+            catapult.stopWinch();
+        }        
     }
 
     /*

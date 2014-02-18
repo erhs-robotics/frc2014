@@ -71,6 +71,9 @@ public class Catapult {
                 adjustLatch();
                 unwindWinch();
             }
+            
+            // stop winch
+            stopWinch();
 
             isPrimed = true;
         } else {
@@ -123,6 +126,9 @@ public class Catapult {
     }
     public void unwindWinch() {
         winchMotor.set(-WINCH_MOTOR_SPEED);
+    }
+    public void stopWinch() {
+        winchMotor.set(0);
     }
     public void setLatched() {
         latchPID.setSetpoint(LATCHED_VOLTAGE);
