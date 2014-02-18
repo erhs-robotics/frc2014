@@ -5,6 +5,10 @@ import org.erhsroboticsclub.frc2014.utilities.Messenger;
 
 public class Robot extends SimpleRobot {
 
+    // Subsystems
+    Catapult catapult;
+    Collector collector;
+    
     // Motors and motor control
     RobotDrive drive;
 
@@ -18,6 +22,10 @@ public class Robot extends SimpleRobot {
     Messenger msg;
 
     public void robotInit() {
+        // Subsystems
+        catapult = new Catapult();
+        collector = new Collector();
+        
         // Motors and motor control
         drive = new RobotDrive(new Talon(RobotMap.TOP_LEFT_MOTOR),
                 new Talon(RobotMap.BOTTOM_LEFT_MOTOR),

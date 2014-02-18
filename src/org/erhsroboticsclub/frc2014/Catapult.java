@@ -27,13 +27,12 @@ public class Catapult {
     public final double baseWinchPotVoltage, targetWinchPotVoltage;
     public boolean isPrimed;
 
-    public Catapult(int winchMotorChannel, int winchPotChannel, int latchMotor1Channel,
-            int latchMotor2Channel, int latchPotChannel) {
-        winchMotor = new Talon(winchMotorChannel);
-        winchPot = new AnalogChannel(winchPotChannel);
-        latchMotor1 = new PWM(latchMotor1Channel);
-        latchMotor2 = new PWM(latchMotor2Channel);
-        latchPot = new AnalogChannel(latchPotChannel);
+    public Catapult() {
+        winchMotor = new Talon(RobotMap.WINCH_MOTOR);
+        winchPot = new AnalogChannel(RobotMap.WHICH_POT);
+        latchMotor1 = new PWM(RobotMap.LATCH_MOTOR_1);
+        latchMotor2 = new PWM(RobotMap.LATCH_MOTOR_2);
+        latchPot = new AnalogChannel(RobotMap.LATCH_POT);
         latchPID = new PIDControllerX2(0, 0, 0, UNLATCHED_VOLTAGE);
         baseWinchPotVoltage = winchPot.getAverageVoltage();
         targetWinchPotVoltage = baseWinchPotVoltage + 5 * (3.5/10);
