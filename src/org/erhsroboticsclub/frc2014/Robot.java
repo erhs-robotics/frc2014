@@ -22,7 +22,7 @@ public class Robot extends SimpleRobot {
     Messenger msg;
     
     // Constants
-    private static final long UPDATE_FREQ = 100;
+    private static final long UPDATE_FREQ = 20;
 
     public void robotInit() {
         // Subsystems
