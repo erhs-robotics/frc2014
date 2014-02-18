@@ -34,6 +34,7 @@ public class Catapult {
         latchMotor2 = new PWM(RobotMap.LATCH_MOTOR_2);
         latchPot = new AnalogChannel(RobotMap.LATCH_POT);
         latchPID = new PIDControllerX2(0, 0, 0, UNLATCHED_VOLTAGE);
+        latchPID.capOutput(-1, 1);
         baseWinchPotVoltage = winchPot.getAverageVoltage();
         targetWinchPotVoltage = baseWinchPotVoltage + 5 * (3.5/10);
         isPrimed = false;

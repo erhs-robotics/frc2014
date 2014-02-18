@@ -72,6 +72,7 @@ public class Robot extends SimpleRobot {
         int mode = 0;
 
         while (isEnabled() && isTest()) {
+            long startTime = System.currentTimeMillis();
             msg.printOnLn("DEBUG: " + MODE[mode], msg.LINE[0]);
             switch (mode) {
                 // select mode
@@ -90,13 +91,19 @@ public class Robot extends SimpleRobot {
                     driveWithJoystick();
                     break;
                 case WINCH:
+                    testWinch();
                     break;
                 case LATCH:
                     break;
                 case COLLECTOR:
                     break;
             }
-        }
+            while(System.currentTimeMillis() - startTime < UPDATE_FREQ);
+        }        
+    }
+    
+    private void testWinch() {
+        
     }
 
     /*
