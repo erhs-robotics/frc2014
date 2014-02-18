@@ -31,6 +31,7 @@ public class RemoteImage extends StaticWidget {
     BufferedImage image;
     Timer timer;       
     private boolean connected = false;
+
     public final StringProperty fileName = new StringProperty(this, "Image Name", "ftp://10.0.53.2/ni-rt/system/BinaryImage.png");
 
     @Override
@@ -43,6 +44,7 @@ public class RemoteImage extends StaticWidget {
                 
                 
                     try {
+
                         image = ImageIO.read(new URL(fileName.getValue()));
                         connected = true;
                     } catch (MalformedURLException ex) {
@@ -66,10 +68,11 @@ public class RemoteImage extends StaticWidget {
 
     }
 
+    
     @Override
     public void paint(Graphics g) {
         Dimension size = getSize();
-        
+
         if (connected) {            
                 g.drawImage(image, 0, 0,size.width, size.height, this);        
         } else {
