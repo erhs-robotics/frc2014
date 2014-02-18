@@ -39,7 +39,16 @@ public class Catapult {
         targetWinchPotVoltage = baseWinchPotVoltage + 5 * (3.5/10);
         isPrimed = false;
     }
+    
+    /*
+     **************************************************************************
+     * Primary functions.
+     **************************************************************************
+     */
 
+    /**
+     * Wind the winch, set the latch, unwind the winch, but do not fire.
+     */
     public void prime() {
         if(!isPrimed) {
             // unlatch
@@ -68,6 +77,9 @@ public class Catapult {
         }
     }
 
+    /**
+     * Once primed, unlatch to fire the catapult.
+     */
     public void fire() {
         if(!isPrimed) {
             prime();
@@ -89,22 +101,34 @@ public class Catapult {
         adjustLatch();
     }
 
+    /*
+     **************************************************************************
+     * Direct operator control.
+     * Control the robot with the joystick for debugging purposes
+     **************************************************************************
+     */
+    
+    // TODO: add operator control functions
+    
+    /*
+     **************************************************************************
+     * Public helper functions.
+     * These helper functions are not declared private because they are useful
+     * for debugging/testing
+     **************************************************************************
+     */
     public void windWinch() {
         winchMotor.set(WINCH_MOTOR_SPEED);
     }
-
     public void unwindWinch() {
         winchMotor.set(-WINCH_MOTOR_SPEED);
     }
-
     public void setLatched() {
         latchPID.setSetpoint(LATCHED_VOLTAGE);
     }
-
     public void setUnlatched() {
         latchPID.setSetpoint(UNLATCHED_VOLTAGE);
     }
-
     public void adjustLatch() {
         double response = latchPID.getPIDResponse(latchPot.getAverageVoltage());
         // map response from [-1, 1] to [0, 255] because the VEX motors used
@@ -113,13 +137,18 @@ public class Catapult {
         latchMotor1.setRaw(mappedResponse);
         latchMotor2.setRaw(mappedResponse);
     }
-
     public void waitForLatch(long waitTime) {
         long startTime = System.currentTimeMillis();
         while(System.currentTimeMillis() - startTime < waitTime) {
             adjustLatch();
         }
     }
+    
+    /*
+     **************************************************************************
+     * Private helper functions.
+     **************************************************************************
+     */
 
     private double map(double x, double inMin, double inMax, double outMin, double outMax) {
         return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
