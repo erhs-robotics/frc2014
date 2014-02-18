@@ -12,6 +12,7 @@ public class Catapult {
     private final double LATCHED_VOLTAGE   = 1.41;
     private final double UNLATCHED_VOLTAGE = 2.58;
     private final long   LATCH_WAIT_TIME   = 2500;
+    private final double KP = 0.5, KI = 0, KD = 0;
 
     // Motors
     private final Talon winchMotor;
@@ -33,7 +34,7 @@ public class Catapult {
         latchMotor1 = new PWM(RobotMap.LATCH_MOTOR_1);
         latchMotor2 = new PWM(RobotMap.LATCH_MOTOR_2);
         latchPot = new AnalogChannel(RobotMap.LATCH_POT);
-        latchPID = new PIDControllerX2(0, 0, 0, UNLATCHED_VOLTAGE);
+        latchPID = new PIDControllerX2(KP, KI, KD, UNLATCHED_VOLTAGE);
         latchPID.capOutput(-1, 1);
         baseWinchPotVoltage = winchPot.getAverageVoltage();
         targetWinchPotVoltage = baseWinchPotVoltage + 5 * (3.5/10);
