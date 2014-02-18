@@ -62,13 +62,15 @@ public class Robot extends SimpleRobot {
     }
 
     public void test() {
-        final int SELECT = 0, DRIVE = 1, WINCH = 2, LATCH = 3, COLLECTOR = 4;
-        String[] MODE = new String[5];
-        MODE[SELECT] = "Select";
-        MODE[DRIVE] = "Drive";
-        MODE[WINCH] = "Winch";
-        MODE[LATCH] = "Latch";
+        final int SELECT = 0, DRIVE = 1, WINCH = 2, LATCH = 3, COLLECTOR = 4, 
+                  CATAPULT = 5;
+        String[] MODE   = new String[6];
+        MODE[SELECT]    = "Select";
+        MODE[DRIVE]     = "Drive";
+        MODE[WINCH]     = "Winch";
+        MODE[LATCH]     = "Latch";
         MODE[COLLECTOR] = "Collector";
+        MODE[CATAPULT]  = "Catapult";
         int mode = 0;
 
         while (isEnabled() && isTest()) {
@@ -81,7 +83,7 @@ public class Robot extends SimpleRobot {
                         msg.printOnLn(i + ": " + MODE[i], msg.LINE[i]);
                     }
                     // TEST: Change the mode
-                    for (int i = 1; i < MODE.length; i++) {
+                    for (int i = 1; i <= MODE.length; i++) {
                         if (stick.getRawButton(i)) {
                             mode = i;
                         }
@@ -97,7 +99,12 @@ public class Robot extends SimpleRobot {
                     testLatch();
                     break;
                 case COLLECTOR:
+                    testCollecter();
                     break;
+                case CATAPULT:
+                    testCatapult();
+                    break;
+                    
             }
             while(System.currentTimeMillis() - startTime < UPDATE_FREQ);
         }        
@@ -113,13 +120,26 @@ public class Robot extends SimpleRobot {
     }
     
     private void testWinch() {
-        if(stick.getRawButton(1)) {
+        if(stick.getRawButton(RobotMap.TEST_WIND_WINCH)) {
             catapult.windWinch();
-        } else if(stick.getRawButton(2)) {
+        } else if(stick.getRawButton(RobotMap.TEST_UNWIND_WINCH)) {
             catapult.unwindWinch();
         } else {
             catapult.stopWinch();
         }        
+    }
+    
+    private void testCollecter() {
+        
+    }
+    
+    private void testCatapult() {
+        if(stick.getRawButton(RobotMap.TEST_PRIME)) {
+            catapult.prime();
+        } else if(stick.getRawButton(RobotMap.TEST_FIRE)) {
+            catapult.fire();
+        }
+        catapult.hold();
     }
 
     /*

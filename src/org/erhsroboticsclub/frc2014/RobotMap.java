@@ -29,5 +29,9 @@ public class RobotMap {
     public static final int NO_CHASSIS_ROTATION = 1;
     public static final int TEST_SET_LACHED     = 2;
     public static final int TEST_SET_UNLACHED   = 3;
+    public static final int TEST_WIND_WINCH     = 2;
+    public static final int TEST_UNWIND_WINCH   = 3;
+    public static final int TEST_PRIME          = 2;
+    public static final int TEST_FIRE           = 1;
     
 }
