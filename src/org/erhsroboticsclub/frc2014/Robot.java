@@ -94,6 +94,7 @@ public class Robot extends SimpleRobot {
                     testWinch();
                     break;
                 case LATCH:
+                    testLatch();
                     break;
                 case COLLECTOR:
                     break;
@@ -102,7 +103,21 @@ public class Robot extends SimpleRobot {
         }        
     }
     
+    private void testLatch() {        
+        if(stick.getRawButton(RobotMap.TEST_SET_LACHED)) {
+           catapult.setLatched();
+        } else if(stick.getRawButton(RobotMap.TEST_SET_UNLACHED)) {
+            catapult.setUnlatched();
+        }
+        catapult.hold();
+    }
+    
     private void testWinch() {
+        if(stick.getRawButton(1)) {
+            catapult.windWinch();
+        } else {
+            
+        }
         
     }
 

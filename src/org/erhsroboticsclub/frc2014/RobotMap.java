@@ -27,5 +27,7 @@ public class RobotMap {
     
     // Drive Joystick Buttons
     public static final int NO_CHASSIS_ROTATION = 1;
+    public static final int TEST_SET_LACHED     = 2;
+    public static final int TEST_SET_UNLACHED   = 3;
     
 }

@@ -69,7 +69,7 @@ public class Catapult {
             // unwind winch
             while(winchPot.getAverageVoltage() > baseWinchPotVoltage) {
                 adjustLatch();
-                windWinch();
+                unwindWinch();
             }
 
             isPrimed = true;
