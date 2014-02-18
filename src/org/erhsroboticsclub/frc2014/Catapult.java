@@ -133,9 +133,10 @@ public class Catapult {
         double response = latchPID.getPIDResponse(latchPot.getAverageVoltage());
         // map response from [-1, 1] to [0, 255] because the VEX motors used
         // to control the latch take a raw PWM signal
-        int mappedResponse = (int) map(response, -1, 1, 0, 255);
-        latchMotor1.setRaw(mappedResponse);
-        latchMotor2.setRaw(mappedResponse);
+        int mappedResponse1 = (int) map(response, -1, 1, 0, 255);
+        int mappedResponse2 = (int) map(response, -1, 1, 255, 0);
+        latchMotor1.setRaw(mappedResponse1);
+        latchMotor2.setRaw(mappedResponse2);
     }
     public void waitForLatch(long waitTime) {
         long startTime = System.currentTimeMillis();
