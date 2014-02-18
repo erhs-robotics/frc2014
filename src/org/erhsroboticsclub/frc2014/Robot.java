@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.*;
 import org.erhsroboticsclub.frc2014.utilities.Messenger;
 
 public class Robot extends SimpleRobot {
-
+    
     // Subsystems
     Catapult catapult;
     Collector collector;
@@ -20,6 +20,9 @@ public class Robot extends SimpleRobot {
 
     // Utility classes
     Messenger msg;
+    
+    // Constants
+    private static final long UPDATE_FREQ = 100;
 
     public void robotInit() {
         // Subsystems
@@ -49,8 +52,12 @@ public class Robot extends SimpleRobot {
     }
 
     public void operatorControl() {
+        gyro.reset();
+        
         while (isEnabled() && isOperatorControl()) {
+            long startTime = System.currentTimeMillis();
             driveWithJoystick();
+            while(System.currentTimeMillis() - startTime < UPDATE_FREQ);
         }
     }
 
