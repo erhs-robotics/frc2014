@@ -88,6 +88,7 @@ public class Robot extends SimpleRobot {
                             mode = i;
                         }
                     }
+                    msg.clearConsole();
                     break;
                 case DRIVE:
                     driveWithJoystick();
@@ -112,11 +113,14 @@ public class Robot extends SimpleRobot {
     
     private void testLatch() {        
         if(stick.getRawButton(RobotMap.TEST_SET_LACHED)) {
+            msg.printOnLn("Latched", msg.LINE[4]);
            catapult.setLatched();
         } else if(stick.getRawButton(RobotMap.TEST_SET_UNLACHED)) {
             catapult.setUnlatched();
-        }
-        catapult.hold();
+            msg.printOnLn("unLatched", msg.LINE[4]);
+        } 
+        
+        catapult.hold();       
     }
     
     private void testWinch() {

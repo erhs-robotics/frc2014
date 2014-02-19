@@ -1,8 +1,10 @@
 package org.erhsroboticsclub.frc2014;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
+import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Talon;
+import org.erhsroboticsclub.frc2014.utilities.Messenger;
 import org.erhsroboticsclub.frc2014.utilities.PIDControllerX2;
 
 public class Catapult {
@@ -10,13 +12,13 @@ public class Catapult {
     // Constants
     private final double WINCH_MOTOR_SPEED = 0.50;
     private final double LATCHED_VOLTAGE   = 1.41;
-    private final double UNLATCHED_VOLTAGE = 2.58;
+    private final double UNLATCHED_VOLTAGE = 3;
     private final long   LATCH_WAIT_TIME   = 2500;
-    private final double KP = 0.5, KI = 0, KD = 0;
+    private final double KP = 1, KI = 0, KD = 0;
 
     // Motors
     private final Talon winchMotor;
-    private final PWM   latchMotor1, latchMotor2;
+    public final PWM   latchMotor1, latchMotor2;
 
     // Potentiometers
     private final AnalogChannel winchPot, latchPot;
@@ -27,10 +29,12 @@ public class Catapult {
     // Instance/State variables
     public final double baseWinchPotVoltage, targetWinchPotVoltage;
     public boolean isPrimed;
+    
+    private Messenger msg = new Messenger();
 
     public Catapult() {
         winchMotor = new Talon(RobotMap.WINCH_MOTOR);
-        winchPot = new AnalogChannel(RobotMap.WHICH_POT);
+        winchPot = new AnalogChannel(RobotMap.WINCH_POT);
         latchMotor1 = new PWM(RobotMap.LATCH_MOTOR_1);
         latchMotor2 = new PWM(RobotMap.LATCH_MOTOR_2);
         latchPot = new AnalogChannel(RobotMap.LATCH_POT);
@@ -61,6 +65,9 @@ public class Catapult {
                 adjustLatch();
                 windWinch();
             }
+            
+            // stop winch
+            stopWinch();
 
             // latch
             setLatched();
@@ -140,8 +147,10 @@ public class Catapult {
         double response = latchPID.getPIDResponse(latchPot.getAverageVoltage());
         // map response from [-1, 1] to [0, 255] because the VEX motors used
         // to control the latch take a raw PWM signal
-        int mappedResponse1 = (int) map(response, -1, 1, 0, 255);
-        int mappedResponse2 = (int) map(response, -1, 1, 255, 0);
+                
+        int mappedResponse1 = (int) map(response, -1, 1, 1, 254);
+        int mappedResponse2 = (int) map(response, -1, 1, 254, 1);
+        
         latchMotor1.setRaw(mappedResponse1);
         latchMotor2.setRaw(mappedResponse2);
     }
