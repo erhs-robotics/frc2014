@@ -36,6 +36,8 @@ public class Robot extends SimpleRobot {
                 new Talon(RobotMap.BOTTOM_LEFT_MOTOR),
                 new Talon(RobotMap.TOP_RIGHT_MOTOR),
                 new Talon(RobotMap.BOTTOM_RIGHT_MOTOR));
+        drive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
+        drive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
 
         // Joysticks
         stick = new JoystickX(RobotMap.DRIVE_JOYSTICK);
@@ -62,7 +64,7 @@ public class Robot extends SimpleRobot {
     }
 
     public void operatorControl() {
-        gyro.reset();
+        //gyro.reset();
         
         while (isEnabled() && isOperatorControl()) {
             long startTime = System.currentTimeMillis();
@@ -165,9 +167,9 @@ public class Robot extends SimpleRobot {
      */
     public void driveWithJoystick() {
         if (!stick.getRawButton(RobotMap.NO_CHASSIS_ROTATION)) {
-            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, gyro.getAngle());
+            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, 0 );            
         } else {
-            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), gyro.getAngle());
+            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), 0);
         }
     }
 
