@@ -1,6 +1,7 @@
 package org.erhsroboticsclub.frc2014;
 
 import edu.wpi.first.wpilibj.*;
+import org.erhsroboticsclub.frc2014.utilities.JoystickX;
 import org.erhsroboticsclub.frc2014.utilities.Messenger;
 
 public class Robot extends SimpleRobot {
@@ -13,7 +14,7 @@ public class Robot extends SimpleRobot {
     RobotDrive drive;
 
     // Joysticks
-    Joystick stick;
+    JoystickX stick;
 
     // Sensor inputs
     Gyro gyro;
@@ -36,7 +37,7 @@ public class Robot extends SimpleRobot {
                 new Talon(RobotMap.BOTTOM_RIGHT_MOTOR));
 
         // Joysticks
-        stick = new Joystick(RobotMap.DRIVE_JOYSTICK);
+        stick = new JoystickX(RobotMap.DRIVE_JOYSTICK);
 
         // Sensor inputs
         gyro = new Gyro(RobotMap.GYRO);
