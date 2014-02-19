@@ -14,8 +14,8 @@ public class VisionProc {
     static public int rmin = 0, rmax = 90, gmin = 50, gmax = 255, bmin = 150, bmax = 255;
     static public int erosionCount = 2;
     static public boolean useConnectivity8 = false;
-    static public CriteriaCollection criteria = new CriteriaCollection();
-    static private AxisCamera camera = AxisCamera.getInstance();
+    static public final CriteriaCollection criteria = new CriteriaCollection();
+    static private final AxisCamera camera = AxisCamera.getInstance();
 
     static {
         criteria.addCriteria(NIVision.MeasurementType.IMAQ_MT_AREA, 1000, 3000, false);
