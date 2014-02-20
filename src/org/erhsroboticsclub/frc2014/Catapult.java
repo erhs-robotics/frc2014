@@ -1,7 +1,6 @@
 package org.erhsroboticsclub.frc2014;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
-import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Talon;
 import org.erhsroboticsclub.frc2014.utilities.Messenger;
@@ -18,7 +17,7 @@ public class Catapult {
 
     // Motors
     private final Talon winchMotor;
-    public final PWM   latchMotor1, latchMotor2;
+    public  final PWM   latchMotor1, latchMotor2;
 
     // Potentiometers
     private final AnalogChannel winchPot, latchPot;
