@@ -10,7 +10,7 @@ import org.erhsroboticsclub.frc2014.utilities.PIDControllerX2;
 public class Catapult {
 
     // Constants
-    private final double WINCH_MOTOR_SPEED = 0.50;
+    private final double WINCH_MOTOR_SPEED = 1;
     private final double LATCHED_VOLTAGE   = 1.41;
     private final double UNLATCHED_VOLTAGE = 3;
     private final long   LATCH_WAIT_TIME   = 2500;
