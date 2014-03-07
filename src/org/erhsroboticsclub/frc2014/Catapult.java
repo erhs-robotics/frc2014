@@ -1,6 +1,7 @@
 package org.erhsroboticsclub.frc2014;
 
 import edu.wpi.first.wpilibj.AnalogChannel;
+import edu.wpi.first.wpilibj.DriverStationLCD;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.Talon;
 import org.erhsroboticsclub.frc2014.utilities.Messenger;
