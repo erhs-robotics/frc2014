@@ -9,8 +9,6 @@ public class Robot extends SimpleRobot {
     // Subsystems
     Catapult catapult;
     Collector collector;
-    
-    // Motors and motor control
     RobotDrive drive;
 
     // Joysticks
@@ -30,8 +28,6 @@ public class Robot extends SimpleRobot {
         // Subsystems
         catapult = new Catapult();
         collector = new Collector();
-        
-        // Motors and motor control
         drive = new RobotDrive(new Talon(RobotMap.TOP_LEFT_MOTOR),
                 new Talon(RobotMap.BOTTOM_LEFT_MOTOR),
                 new Talon(RobotMap.TOP_RIGHT_MOTOR),
@@ -112,7 +108,7 @@ public class Robot extends SimpleRobot {
                     testLatch();
                     break;
                 case COLLECTOR:
-                    testCollecter();
+                    testCollector();
                     break;
                 case CATAPULT:
                     testCatapult();
@@ -124,10 +120,10 @@ public class Robot extends SimpleRobot {
     }
     
     private void testLatch() {        
-        if(stick.getRawButton(RobotMap.TEST_SET_LACHED)) {
+        if(stick.getRawButton(RobotMap.TEST_SET_LATCHED)) {
             msg.printOnLn("Latched", msg.LINE[4]);
            catapult.setLatched();
-        } else if(stick.getRawButton(RobotMap.TEST_SET_UNLACHED)) {
+        } else if(stick.getRawButton(RobotMap.TEST_SET_UNLATCHED)) {
             catapult.setUnlatched();
             msg.printOnLn("unLatched", msg.LINE[4]);
         } 
@@ -146,7 +142,7 @@ public class Robot extends SimpleRobot {
         }        
     }
     
-    private void testCollecter() {
+    private void testCollector() {
         
     }
     
