@@ -1,8 +1,10 @@
 package org.erhsroboticsclub.frc2014;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.erhsroboticsclub.frc2014.utilities.JoystickX;
 import org.erhsroboticsclub.frc2014.utilities.Messenger;
+import org.erhsroboticsclub.frc2014.utilities.PIDControllerX2;
 
 public class Robot extends SimpleRobot {
     
@@ -16,6 +18,7 @@ public class Robot extends SimpleRobot {
 
     // Sensor inputs
     Gyro gyro;
+    PIDControllerX2 gyroPID = new PIDControllerX2(0, 0, 0, 5);
 
     // Utility classes
     Messenger msg;
@@ -60,7 +63,7 @@ public class Robot extends SimpleRobot {
     }
 
     public void operatorControl() {
-        //gyro.reset();
+        gyro.reset();
         
         while (isEnabled() && isOperatorControl()) {
             long startTime = System.currentTimeMillis();
@@ -80,6 +83,9 @@ public class Robot extends SimpleRobot {
         MODE[COLLECTOR] = "Collector";
         MODE[CATAPULT]  = "Catapult";
         int mode = 0;
+        
+        // init SD!
+        initSmartDashboard();
 
         while (isEnabled() && isTest()) {
             long startTime = System.currentTimeMillis();
@@ -99,7 +105,7 @@ public class Robot extends SimpleRobot {
                     msg.clearConsole();
                     break;
                 case DRIVE:
-                    driveWithJoystick();
+                    testDrive();
                     break;
                 case WINCH:
                     testWinch();
@@ -117,6 +123,29 @@ public class Robot extends SimpleRobot {
             }
             while(System.currentTimeMillis() - startTime < UPDATE_FREQ);
         }        
+    }
+    
+    private void initSmartDashboard() {
+        SmartDashboard.putNumber("KP", 0.06);
+        SmartDashboard.putNumber("KI", 0.00);
+        SmartDashboard.putNumber("KD", 0.07);
+    }
+    
+    private void testDrive() {
+        /* Update PID from SmartDashboard */
+        double p = SmartDashboard.getNumber("KP", 0.06);
+        double i = SmartDashboard.getNumber("KI", 0);
+        double d = SmartDashboard.getNumber("KD", 0.07);
+        if(stick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
+            gyro.reset();
+        }
+        if (stick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
+            driveStraight(-stick.getY(), 0);
+            System.out.println("Driving with PID");
+        } else {
+            driveWithJoystick();
+            System.out.println("Driving unaided");
+        }
     }
     
     private void testLatch() {        
@@ -153,7 +182,7 @@ public class Robot extends SimpleRobot {
         }
         catapult.hold();
     }
-
+    
     /*
      **************************************************************************
      * Control Functions. 
@@ -167,6 +196,16 @@ public class Robot extends SimpleRobot {
         } else {
             drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), 0);
         }
+    }
+    
+    public void driveStraight(double speed, double targetAngle) {
+        double actualAngle = gyro.getAngle();
+        double e = targetAngle - actualAngle;
+        gyroPID.setSetpoint(targetAngle);
+        double out = gyroPID.getPIDResponse(actualAngle);
+        msg.printLn("" + e);
+        drive.tankDrive(speed + out, speed - out);
+        drive.mecanumDrive_Cartesian(out, speed, 0, 0);
     }
 
     /*

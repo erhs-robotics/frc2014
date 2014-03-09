@@ -33,5 +33,6 @@ public class RobotMap {
     public static final int TEST_UNWIND_WINCH   = 3;
     public static final int TEST_PRIME          = 2;
     public static final int TEST_FIRE           = 1;
+    public static final int DRIVE_STRAIGHT      = 9;
     
 }
