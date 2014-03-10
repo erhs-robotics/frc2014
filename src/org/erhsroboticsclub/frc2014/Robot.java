@@ -119,7 +119,8 @@ public class Robot extends SimpleRobot {
         }        
     }
     
-    private void testLatch() {        
+    private void testLatch() {  
+        /*
         if(stick.getRawButton(RobotMap.TEST_SET_LATCHED)) {
             msg.printOnLn("Latched", msg.LINE[4]);
            catapult.setLatched();
@@ -127,8 +128,10 @@ public class Robot extends SimpleRobot {
             catapult.setUnlatched();
             msg.printOnLn("unLatched", msg.LINE[4]);
         } 
+        */
         
-        catapult.hold();       
+        
+        //catapult.hold();       
     }
     
     private void testWinch() {
@@ -139,11 +142,30 @@ public class Robot extends SimpleRobot {
             catapult.unwindWinch();
         } else {
             catapult.stopWinch();
-        }        
+        }
+        catapult.latchMotor1.setRaw((int)Catapult.map(stick.getY(), -1, 1, 0, 255));
+        catapult.latchMotor2.setRaw((int)Catapult.map(stick.getY(), -1, 1, 255, 0));
     }
     
     private void testCollector() {
+        if(stick.getY() > 0.8) {
+            collector.rotateUp();
+        } else if(stick.getY() < -0.8) {
+            collector.rotateDown();
+        } else {
+            collector.stopRotating();
+        }
         
+        if(stick.isButtonDown(RobotMap.TEST_COLLECTER_COLLECT)) {
+            collector.collect();
+        } else if(stick.isButtonDown(RobotMap.TEST_COLLECTER_EJECT)) {
+            collector.eject();
+        } else {
+            collector.stopCollecter();
+        }   
+        
+        Collector.COLLECT_MOTOR_SPEED = stick.getThrottle();
+        msg.printOnLn("" + Collector.COLLECT_MOTOR_SPEED, DriverStationLCD.Line.kUser4);
     }
     
     private void testCatapult() {

@@ -14,6 +14,9 @@ public class RobotMap {
     public static final int WINCH_MOTOR        = 5; // TODO
     public static final int LATCH_MOTOR_1      = 6; // TODO
     public static final int LATCH_MOTOR_2      = 7; // TODO
+    public static final int COLLECTER_COLLECT_MOTOR = 8;
+    public static final int COLLECTER_ROTATION_MOTOR1 = 9;
+    public static final int COLLECTER_ROTATION_MOTOR2 = 10;
         
     // Digital Input
     
@@ -27,11 +30,17 @@ public class RobotMap {
     
     // Drive Joystick Buttons
     public static final int NO_CHASSIS_ROTATION = 1;
+    // Latch Test
     public static final int TEST_SET_LATCHED     = 5;
     public static final int TEST_SET_UNLATCHED   = 6;
+    // Winch Test
     public static final int TEST_WIND_WINCH     = 3;
     public static final int TEST_UNWIND_WINCH   = 4;
+    // Fire Test
     public static final int TEST_PRIME          = 2;
     public static final int TEST_FIRE           = 1;
+    // Collecter Test
+    public static final int TEST_COLLECTER_COLLECT = 5;
+    public static final int TEST_COLLECTER_EJECT = 6;
     
 }
