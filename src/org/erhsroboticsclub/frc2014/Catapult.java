@@ -9,7 +9,7 @@ import org.erhsroboticsclub.frc2014.utilities.PIDControllerX2;
 public class Catapult {
 
     // Constants
-    private final double WINCH_MOTOR_SPEED = 0.50;
+    private final double WINCH_MOTOR_SPEED = 1;
     private final double LATCHED_VOLTAGE   = 1.41;
     private final double UNLATCHED_VOLTAGE = 3;
     private final long   LATCH_WAIT_TIME   = 2500;
@@ -147,11 +147,12 @@ public class Catapult {
         // map response from [-1, 1] to [0, 255] because the VEX motors used
         // to control the latch take a raw PWM signal
                 
-        int mappedResponse1 = (int) map(response, -1, 1, 1, 254);
-        int mappedResponse2 = (int) map(response, -1, 1, 254, 1);
+        int mappedResponse1 = (int) map(response, -1, 1, 1, 245);
+        int mappedResponse2 = (int) map(response, -1, 1, 245, 1);
         
         latchMotor1.setRaw(mappedResponse1);
         latchMotor2.setRaw(mappedResponse2);
+        msg.printOnLn(mappedResponse1 + ", " + mappedResponse2, DriverStationLCD.Line.kUser6);
     }
     public void waitForLatch(long waitTime) {
         long startTime = System.currentTimeMillis();

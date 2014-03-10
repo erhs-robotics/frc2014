@@ -161,6 +161,7 @@ public class Robot extends SimpleRobot {
     }
     
     private void testWinch() {
+        testLatch();
         if(stick.getRawButton(RobotMap.TEST_WIND_WINCH)) {
             catapult.windWinch();
         } else if(stick.getRawButton(RobotMap.TEST_UNWIND_WINCH)) {
