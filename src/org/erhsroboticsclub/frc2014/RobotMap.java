@@ -27,6 +27,7 @@ public class RobotMap {
     
     // USB Input (Joysticks)
     public static final int DRIVE_JOYSTICK = 1;
+    public static final int DRIVE_STRAIGHT      = 9;
     
     // Drive Joystick Buttons
     public static final int NO_CHASSIS_ROTATION = 1;
@@ -39,8 +40,12 @@ public class RobotMap {
     // Fire Test
     public static final int TEST_PRIME          = 2;
     public static final int TEST_FIRE           = 1;
+
     // Collecter Test
     public static final int TEST_COLLECTER_COLLECT = 5;
     public static final int TEST_COLLECTER_EJECT = 6;
+
+    
+
     
 }
