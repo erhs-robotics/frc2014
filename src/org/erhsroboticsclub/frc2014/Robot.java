@@ -15,6 +15,7 @@ public class Robot extends SimpleRobot {
 
     // Joysticks
     JoystickX stick;
+    JoystickX collectorStick;
 
     // Sensor inputs
     Gyro gyro;
@@ -41,6 +42,7 @@ public class Robot extends SimpleRobot {
 
         // Joysticks
         stick = new JoystickX(RobotMap.DRIVE_JOYSTICK);
+        collectorStick = new JoystickX(RobotMap.COLLECTOR_STICK);
 
         // Sensor inputs
         gyro = new Gyro(RobotMap.GYRO);
@@ -68,7 +70,10 @@ public class Robot extends SimpleRobot {
         
         while (isEnabled() && isOperatorControl()) {
             long startTime = System.currentTimeMillis();
-            driveWithJoystick();
+            
+            drive();
+            collector();
+            
             while(System.currentTimeMillis() - startTime < UPDATE_FREQ);
         }
     }
@@ -213,6 +218,10 @@ public class Robot extends SimpleRobot {
      * can be called by the operatorControl() function
      **************************************************************************
      */
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // DRIVE                                                                  //
+    ////////////////////////////////////////////////////////////////////////////
     public void driveWithJoystick() {
         if (!stick.getRawButton(RobotMap.NO_CHASSIS_ROTATION)) {
             drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, 0 );            
@@ -220,7 +229,6 @@ public class Robot extends SimpleRobot {
             drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), 0);
         }
     }
-    
     public void driveStraight(double speed, double targetAngle) {
         double actualAngle = gyro.getAngle();
         double e = targetAngle - actualAngle;
@@ -230,7 +238,35 @@ public class Robot extends SimpleRobot {
         drive.tankDrive(speed + out, speed - out);
         drive.mecanumDrive_Cartesian(out, speed, 0, 0);
     }
-
+    public void drive() {
+        if(stick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
+            gyro.reset();
+        }
+        if (stick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
+            driveStraight(-stick.getY(), 0);
+            System.out.println("Driving with PID");
+        } else {
+            driveWithJoystick();
+            System.out.println("Driving unaided");
+        }
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // COLLECTOR                                                              //
+    ////////////////////////////////////////////////////////////////////////////
+    public void collector() {
+        // Control angle
+        collector.rotate(-collectorStick.getY());
+        
+        // Collect or eject
+        if(collectorStick.getRawButton(RobotMap.COLLECTOR_COLLECT)) {
+            collector.collect();
+        }
+        else if(collectorStick.getRawButton(RobotMap.COLLECTOR_EJECT)) {
+            collector.eject();
+        }
+    }
+    
     /*
      **************************************************************************
      * Private Helper Functions.

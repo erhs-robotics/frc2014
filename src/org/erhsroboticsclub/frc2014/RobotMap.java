@@ -27,11 +27,12 @@ public class RobotMap {
     public static final int LATCH_POT = 1; // TODO
     
     // USB Input (Joysticks)
-    public static final int DRIVE_JOYSTICK = 1;
-    public static final int DRIVE_STRAIGHT      = 9;
+    public static final int DRIVE_JOYSTICK  = 1;
+    public static final int COLLECTOR_STICK = 2;
     
     // Drive Joystick Buttons
     public static final int NO_CHASSIS_ROTATION = 1;
+    public static final int DRIVE_STRAIGHT      = 9;
     // Latch Test
     public static final int TEST_SET_LATCHED     = 5;
     public static final int TEST_SET_UNLATCHED   = 6;
@@ -41,12 +42,13 @@ public class RobotMap {
     // Fire Test
     public static final int TEST_PRIME          = 2;
     public static final int TEST_FIRE           = 1;
-
+    
     // Collecter Test
     public static final int TEST_COLLECTER_COLLECT = 5;
     public static final int TEST_COLLECTER_EJECT = 6;
 
-    
+    // Collector Joystick
+    public static final int COLLECTOR_COLLECT = 1;
+    public static final int COLLECTOR_EJECT   = 2;
 
-    
 }
