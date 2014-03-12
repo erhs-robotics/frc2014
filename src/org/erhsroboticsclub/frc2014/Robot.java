@@ -18,7 +18,7 @@ public class Robot extends SimpleRobot {
 
     // Sensor inputs
     Gyro gyro;
-    PIDControllerX2 gyroPID = new PIDControllerX2(0, 0, 0, 5);
+    PIDControllerX2 gyroPID;
 
     // Utility classes
     Messenger msg;
@@ -44,6 +44,7 @@ public class Robot extends SimpleRobot {
 
         // Sensor inputs
         gyro = new Gyro(RobotMap.GYRO);
+        gyroPID = new PIDControllerX2(0, 0, 0, 5);
 
         // Utility classes
         msg = new Messenger();
