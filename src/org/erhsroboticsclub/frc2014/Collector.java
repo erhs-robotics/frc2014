@@ -1,19 +1,20 @@
 package org.erhsroboticsclub.frc2014;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.Talon;
 
 public class Collector {
-    private final Victor collectMotor, rotateMotor1, rotateMotor2;
+    
+    private final Talon collectMotor, rotateMotor1, rotateMotor2;
     private final DigitalInput limitSwitch;
     public static double COLLECT_MOTOR_SPEED = .29;
     public static double HOLD_MOTOR_SPEED = .1;
     private static final double ROTATE_MOTOR_SPEED = 0.4;
     
     public Collector() {
-        collectMotor = new Victor(RobotMap.COLLECTER_COLLECT_MOTOR);
-        rotateMotor1 = new Victor(RobotMap.COLLECTER_ROTATION_MOTOR1);
-        rotateMotor2 = new Victor(RobotMap.COLLECTER_ROTATION_MOTOR2);
+        collectMotor = new Talon(RobotMap.COLLECTER_COLLECT_MOTOR);
+        rotateMotor1 = new Talon(RobotMap.COLLECTER_ROTATION_MOTOR1);
+        rotateMotor2 = new Talon(RobotMap.COLLECTER_ROTATION_MOTOR2);
         limitSwitch = new DigitalInput(RobotMap.COLLECTOR_LIMIT_SWITCH);
     }
     
