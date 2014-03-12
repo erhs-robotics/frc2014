@@ -242,8 +242,7 @@ public class Robot extends SimpleRobot {
         gyroPID.setSetpoint(targetAngle);
         double out = gyroPID.getPIDResponse(actualAngle);
         msg.printLn("" + e);
-        drive.tankDrive(speed + out, speed - out);
-        drive.mecanumDrive_Cartesian(out, speed, 0, 0);
+        drive.mecanumDrive_Cartesian(0, speed, out, 0);
     }
     public void operatorDrive() {
         if(stick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
