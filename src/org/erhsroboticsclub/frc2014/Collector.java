@@ -11,10 +11,13 @@ public class Collector {
     public static double HOLD_MOTOR_SPEED = .1;
     private static final double ROTATE_MOTOR_SPEED = 0.4;
     
+    public static final double ROTATE_UP = ROTATE_MOTOR_SPEED;
+    public static final double ROTATE_DOWN = -ROTATE_UP;
+    
     public Collector() {
-        collectMotor = new Talon(RobotMap.COLLECTER_COLLECT_MOTOR);
-        rotateMotor1 = new Talon(RobotMap.COLLECTER_ROTATION_MOTOR1);
-        rotateMotor2 = new Talon(RobotMap.COLLECTER_ROTATION_MOTOR2);
+        collectMotor = new Talon(RobotMap.COLLECTOR_COLLECT_MOTOR);
+        rotateMotor1 = new Talon(RobotMap.COLLECTOR_ROTATION_MOTOR1);
+        rotateMotor2 = new Talon(RobotMap.COLLECTOR_ROTATION_MOTOR2);
         limitSwitch = new DigitalInput(RobotMap.COLLECTOR_LIMIT_SWITCH);
     }
     
@@ -30,18 +33,8 @@ public class Collector {
         collectMotor.set(-COLLECT_MOTOR_SPEED);
     }
     
-    public void stopCollecter() {
+    public void stopCollector() {
         collectMotor.set(0);
-    }
-    
-    public void rotateUp() {
-        rotateMotor1.set(ROTATE_MOTOR_SPEED);
-        rotateMotor2.set(ROTATE_MOTOR_SPEED);          
-    } 
-    
-    public void rotateDown() {
-        rotateMotor1.set(-ROTATE_MOTOR_SPEED);
-        rotateMotor2.set(-ROTATE_MOTOR_SPEED);          
     }
     
     public void rotate(double speed) {

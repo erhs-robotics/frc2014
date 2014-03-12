@@ -27,7 +27,7 @@ public class Robot extends SimpleRobot {
     // Constants
     private static final long UPDATE_FREQ = 20;
     private static final long AUTO_DRIVE_TIME = 100;
-    private static final long AUTO_DRIVE_SPEED = 1;
+    private static final int AUTO_DRIVE_SPEED = 1;
 
     public void robotInit() {
         // Subsystems
@@ -60,9 +60,7 @@ public class Robot extends SimpleRobot {
         while(System.currentTimeMillis() - time < AUTO_DRIVE_TIME) {
             driveStraight(AUTO_DRIVE_SPEED, 0);
         }
-        
-        collector.eject(); // Eject doesn't work yet!
-        
+        collector.eject(); // Eject doesn't work yet!    
     }
 
     public void operatorControl() {
@@ -71,12 +69,20 @@ public class Robot extends SimpleRobot {
         while (isEnabled() && isOperatorControl()) {
             long startTime = System.currentTimeMillis();
             
-            drive();
-            collector();
+            operatorDrive();
+            operatorCollector();
             
             while(System.currentTimeMillis() - startTime < UPDATE_FREQ);
         }
     }
+    
+    /*
+     **************************************************************************
+     * Test functions
+     * Break down the parts of the robot into small subsystems and write unit
+     * tests for each.
+     **************************************************************************
+     */
 
     public void test() {
         final int SELECT = 0, DRIVE = 1, WINCH = 2, LATCH = 3, COLLECTOR = 4, 
@@ -131,7 +137,6 @@ public class Robot extends SimpleRobot {
         }        
     }
     
-
     private void initSmartDashboard() {
         SmartDashboard.putNumber("KP", 0.06);
         SmartDashboard.putNumber("KI", 0.00);
@@ -143,6 +148,8 @@ public class Robot extends SimpleRobot {
         double p = SmartDashboard.getNumber("KP", 0.06);
         double i = SmartDashboard.getNumber("KI", 0);
         double d = SmartDashboard.getNumber("KD", 0.07);
+        gyroPID.setKP(p); gyroPID.setKI(i); gyroPID.setKD(d);
+        
         if(stick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
             gyro.reset();
         }
@@ -183,19 +190,19 @@ public class Robot extends SimpleRobot {
     
     private void testCollector() {
         if(stick.getY() > 0.8) {
-            collector.rotateUp();
+            collector.rotate(Collector.ROTATE_UP);
         } else if(stick.getY() < -0.8) {
-            collector.rotateDown();
+            collector.rotate(Collector.ROTATE_DOWN);
         } else {
             collector.stopRotating();
         }
         
-        if(stick.isButtonDown(RobotMap.TEST_COLLECTER_COLLECT)) {
+        if(stick.isButtonDown(RobotMap.TEST_COLLECT)) {
             collector.collect();
-        } else if(stick.isButtonDown(RobotMap.TEST_COLLECTER_EJECT)) {
+        } else if(stick.isButtonDown(RobotMap.TEST_EJECT)) {
             collector.eject();
         } else {
-            collector.stopCollecter();
+            collector.stopCollector();
         }   
         
         Collector.COLLECT_MOTOR_SPEED = stick.getThrottle();
@@ -238,7 +245,7 @@ public class Robot extends SimpleRobot {
         drive.tankDrive(speed + out, speed - out);
         drive.mecanumDrive_Cartesian(out, speed, 0, 0);
     }
-    public void drive() {
+    public void operatorDrive() {
         if(stick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
             gyro.reset();
         }
@@ -254,7 +261,7 @@ public class Robot extends SimpleRobot {
     ////////////////////////////////////////////////////////////////////////////
     // COLLECTOR                                                              //
     ////////////////////////////////////////////////////////////////////////////
-    public void collector() {
+    public void operatorCollector() {
         // Control angle
         collector.rotate(-collectorStick.getY());
         
