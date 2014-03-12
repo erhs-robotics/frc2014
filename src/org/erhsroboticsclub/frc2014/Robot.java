@@ -26,6 +26,7 @@ public class Robot extends SimpleRobot {
     // Constants
     private static final long UPDATE_FREQ = 20;
     private static final long AUTO_DRIVE_TIME = 100;
+    private static final long AUTO_DRIVE_SPEED = 1;
 
     public void robotInit() {
         // Subsystems
@@ -52,14 +53,13 @@ public class Robot extends SimpleRobot {
 
     public void autonomous() {
         gyro.reset();
-        catapult.prime();
-        
-        long startTime = System.currentTimeMillis();        
-        while(System.currentTimeMillis() - startTime < AUTO_DRIVE_TIME) {
-            drive.mecanumDrive_Cartesian(0, -1, 0, gyro.getAngle());
+        long time = System.currentTimeMillis();
+        while(System.currentTimeMillis() - time < AUTO_DRIVE_TIME) {
+            driveStraight(AUTO_DRIVE_SPEED, 0);
         }
         
-        catapult.fire();
+        collector.eject(); // Eject doesn't work yet!
+        
     }
 
     public void operatorControl() {

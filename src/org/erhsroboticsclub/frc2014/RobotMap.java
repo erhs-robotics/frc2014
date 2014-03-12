@@ -19,6 +19,7 @@ public class RobotMap {
     public static final int COLLECTER_ROTATION_MOTOR2 = 10;
         
     // Digital Input
+    public static final int COLLECTOR_LIMIT_SWITCH = 1;
     
     // Analog Input
     public static final int GYRO      = 2;
