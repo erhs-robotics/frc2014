@@ -22,9 +22,10 @@ public class RobotMap {
     public static final int COLLECTOR_LIMIT_SWITCH = 1;
     
     // Analog Input
-    public static final int GYRO      = 2;
-    public static final int WINCH_POT = 3;
-    public static final int LATCH_POT = 1;
+    public static final int GYRO          = 2;
+    public static final int WINCH_POT     = 3;
+    public static final int LATCH_POT     = 1;
+    public static final int AUTO_MODE_POT = 4;
     
     // USB Input (Joysticks)
     public static final int DRIVE_JOYSTICK  = 1;

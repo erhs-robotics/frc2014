@@ -20,6 +20,7 @@ public class Robot extends SimpleRobot {
     // Sensor inputs
     Gyro gyro;
     PIDControllerX2 gyroPID;
+    AnalogChannel autoModePot;
 
     // Utility classes
     Messenger msg;
@@ -28,6 +29,7 @@ public class Robot extends SimpleRobot {
     private static final long UPDATE_FREQ = 20;
     private static final long AUTO_DRIVE_TIME = 100;
     private static final int AUTO_DRIVE_SPEED = 1;
+    private static final double AUTO_BIAS = 2;
 
     public void robotInit() {
         // Subsystems
@@ -47,6 +49,7 @@ public class Robot extends SimpleRobot {
         // Sensor inputs
         gyro = new Gyro(RobotMap.GYRO);
         gyroPID = new PIDControllerX2(0, 0, 0, 5);
+        autoModePot = new AnalogChannel(RobotMap.AUTO_MODE_POT);
 
         // Utility classes
         msg = new Messenger();
@@ -56,9 +59,13 @@ public class Robot extends SimpleRobot {
 
     public void autonomous() {
         gyro.reset();
+        
+        boolean driftLeft = autoModePot.getAverageVoltage() <= 2.5;
+        double bias = driftLeft ? -AUTO_BIAS : AUTO_BIAS;
+        
         long time = System.currentTimeMillis();
         while(System.currentTimeMillis() - time < AUTO_DRIVE_TIME) {
-            driveStraight(AUTO_DRIVE_SPEED, 0);
+            driveStraight(AUTO_DRIVE_SPEED, 0, bias);
         }
         collector.eject(); // Eject doesn't work yet!    
     }
@@ -94,20 +101,21 @@ public class Robot extends SimpleRobot {
             drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), 0);
         }
     }
-    public void driveStraight(double speed, double targetAngle) {
+    public void driveStraight(double speed, double targetAngle, double bias) {
         double actualAngle = gyro.getAngle();
         double e = targetAngle - actualAngle;
         gyroPID.setSetpoint(targetAngle);
         double out = gyroPID.getPIDResponse(actualAngle);
         msg.printLn("" + e);
-        drive.mecanumDrive_Cartesian(0, speed, out, 0);
+        drive.mecanumDrive_Cartesian(0, speed, out + bias, 0);
     }
+   
     public void operatorDrive() {
         if(stick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
             gyro.reset();
         }
         if (stick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
-            driveStraight(-stick.getY(), 0);
+            driveStraight(-stick.getY(), 0, 0);
             System.out.println("Driving with PID");
         } else {
             driveWithJoystick();
@@ -214,7 +222,7 @@ public class Robot extends SimpleRobot {
             gyro.reset();
         }
         if (stick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
-            driveStraight(-stick.getY(), 0);
+            driveStraight(-stick.getY(), 0, 0);
             System.out.println("Driving with PID");
         } else {
             driveWithJoystick();
