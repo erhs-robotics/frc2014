@@ -206,9 +206,8 @@ public class Robot extends SimpleRobot {
         SmartDashboard.putNumber("KD", 0.07);
         
         SmartDashboard.putNumber("CollectSpeed", 0.29);
-        SmartDashboard.putNumber("HoldSpeed",    0.10);
-        SmartDashboard.putNumber("RotateSpeed",  0.40);
-        SmartDashboard.putNumber("HoldRotation", 0.10);
+        SmartDashboard.putNumber("HoldSpeed",    0);
+        SmartDashboard.putNumber("RotateSpeed",  0.40);        
         
         SmartDashboard.putNumber("AutoBias", AUTO_BIAS);
     }
@@ -261,8 +260,7 @@ public class Robot extends SimpleRobot {
     private void testCollector() {
         Collector.COLLECT_MOTOR_SPEED = SmartDashboard.getNumber("CollectSpeed");
         Collector.HOLD_MOTOR_SPEED    = SmartDashboard.getNumber("HoldSpeed");
-        Collector.ROTATE_MOTOR_SPEED  = SmartDashboard.getNumber("RotateSpeed");
-        Collector.HOLD_ROTATION_SPEED = SmartDashboard.getNumber("HoldRotation");
+        Collector.ROTATE_MOTOR_SPEED  = SmartDashboard.getNumber("RotateSpeed");        
         
         operatorCollector();
     }

@@ -8,9 +8,8 @@ public class Collector {
     private final Talon collectMotor, rotateMotor1, rotateMotor2;
     private final DigitalInput limitSwitch;
     public static double COLLECT_MOTOR_SPEED = .29;
-    public static double HOLD_MOTOR_SPEED = .1;
-    public static double ROTATE_MOTOR_SPEED = 0.4;
-    public static double HOLD_ROTATION_SPEED = 0.2;
+    public static double HOLD_MOTOR_SPEED = 0;
+    public static double ROTATE_MOTOR_SPEED = 0.4;    
     
     public static final double ROTATE_UP = ROTATE_MOTOR_SPEED;
     public static final double ROTATE_DOWN = -ROTATE_UP;
