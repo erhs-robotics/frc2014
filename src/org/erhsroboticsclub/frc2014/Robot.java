@@ -14,7 +14,7 @@ public class Robot extends SimpleRobot {
     RobotDrive drive;
 
     // Joysticks
-    JoystickX stick;
+    JoystickX driveStick;
     JoystickX collectorStick;
 
     // Sensor inputs
@@ -43,7 +43,7 @@ public class Robot extends SimpleRobot {
         drive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
 
         // Joysticks
-        stick = new JoystickX(RobotMap.DRIVE_JOYSTICK);
+        driveStick = new JoystickX(RobotMap.DRIVE_JOYSTICK);
         collectorStick = new JoystickX(RobotMap.COLLECTOR_STICK);
 
         // Sensor inputs
@@ -97,10 +97,10 @@ public class Robot extends SimpleRobot {
     // DRIVE                                                                  //
     ////////////////////////////////////////////////////////////////////////////
     public void driveWithJoystick() {
-        if (stick.getRawButton(RobotMap.ALLOW_CHASSIS_ROTATION)) {
-            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), 0);                        
+        if (driveStick.getRawButton(RobotMap.ALLOW_CHASSIS_ROTATION)) {
+            drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), driveStick.getZ(), 0);                        
         } else {
-            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, 0 );
+            drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), 0, 0 );
         }
     }
     public void driveStraight(double speed, double targetAngle, double bias) {
@@ -113,11 +113,11 @@ public class Robot extends SimpleRobot {
     }
    
     public void operatorDrive() {
-        if(stick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
+        if(driveStick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
             gyro.reset();
         }
-        if (stick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
-            driveStraight(-stick.getY(), 0, 0);
+        if (driveStick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
+            driveStraight(-driveStick.getY(), 0, 0);
             System.out.println("Driving with PID");
         } else {
             driveWithJoystick();
@@ -176,7 +176,7 @@ public class Robot extends SimpleRobot {
                     }
                     // TEST: Change the mode
                     for (int i = 1; i <= MODE.length; i++) {
-                        if (stick.getRawButton(i)) {
+                        if (driveStick.getRawButton(i)) {
                             mode = i;
                         }
                     }
@@ -222,11 +222,11 @@ public class Robot extends SimpleRobot {
         double d = SmartDashboard.getNumber("KD", 0.07);
         gyroPID.setKP(p); gyroPID.setKI(i); gyroPID.setKD(d);
         
-        if(stick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
+        if(driveStick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
             gyro.reset();
         }
-        if (stick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
-            driveStraight(-stick.getY(), 0, 0);
+        if (driveStick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
+            driveStraight(-driveStick.getY(), 0, 0);
             System.out.println("Driving with PID");
         } else {
             driveWithJoystick();
@@ -236,10 +236,10 @@ public class Robot extends SimpleRobot {
     
     private void testLatch() { 
 
-        if(stick.getRawButton(RobotMap.TEST_SET_LATCHED)) {
+        if(driveStick.getRawButton(RobotMap.TEST_SET_LATCHED)) {
             msg.printOnLn("Latched", msg.LINE[4]);
            catapult.setLatched();
-        } else if(stick.getRawButton(RobotMap.TEST_SET_UNLATCHED)) {
+        } else if(driveStick.getRawButton(RobotMap.TEST_SET_UNLATCHED)) {
             catapult.setUnlatched();
             msg.printOnLn("unLatched", msg.LINE[4]);
         }      
@@ -249,15 +249,15 @@ public class Robot extends SimpleRobot {
     
     private void testWinch() {
         testLatch();
-        if(stick.getRawButton(RobotMap.TEST_WIND_WINCH)) {
+        if(driveStick.getRawButton(RobotMap.TEST_WIND_WINCH)) {
             catapult.windWinch();
-        } else if(stick.getRawButton(RobotMap.TEST_UNWIND_WINCH)) {
+        } else if(driveStick.getRawButton(RobotMap.TEST_UNWIND_WINCH)) {
             catapult.unwindWinch();
         } else {
             catapult.stopWinch();
         }
-        catapult.latchMotor1.setRaw((int)Catapult.map(stick.getY(), -1, 1, 0, 255));
-        catapult.latchMotor2.setRaw((int)Catapult.map(stick.getY(), -1, 1, 255, 0));
+        catapult.latchMotor1.setRaw((int)Catapult.map(driveStick.getY(), -1, 1, 0, 255));
+        catapult.latchMotor2.setRaw((int)Catapult.map(driveStick.getY(), -1, 1, 255, 0));
     }
     
     private void testCollector() {
@@ -269,30 +269,30 @@ public class Robot extends SimpleRobot {
     }
     
     private void testCollectorMotors() {
-        if(stick.getY() > 0.8) {
+        if(driveStick.getY() > 0.8) {
             collector.rotate(Collector.MAX_ROTATE_MOTOR_SPEED);
-        } else if(stick.getY() < -0.8) {
+        } else if(driveStick.getY() < -0.8) {
             collector.rotate(-Collector.MAX_ROTATE_MOTOR_SPEED);
         } else {
             collector.stopRotating();
         }
         
-        if(stick.isButtonDown(RobotMap.TEST_COLLECT)) {
+        if(driveStick.isButtonDown(RobotMap.TEST_COLLECT)) {
             collector.collect();
-        } else if(stick.isButtonDown(RobotMap.TEST_EJECT)) {
+        } else if(driveStick.isButtonDown(RobotMap.TEST_EJECT)) {
             collector.eject();
         } else {
             collector.stopCollector();
         }   
         
-        Collector.COLLECT_MOTOR_SPEED = stick.getThrottle();
+        Collector.COLLECT_MOTOR_SPEED = driveStick.getThrottle();
         msg.printOnLn("" + Collector.COLLECT_MOTOR_SPEED, DriverStationLCD.Line.kUser4);
     }
     
     private void testCatapult() {
-        if(stick.getRawButton(RobotMap.TEST_PRIME)) {
+        if(driveStick.getRawButton(RobotMap.TEST_PRIME)) {
             catapult.prime();
-        } else if(stick.getRawButton(RobotMap.TEST_FIRE)) {
+        } else if(driveStick.getRawButton(RobotMap.TEST_FIRE)) {
             catapult.fire();
         }
         catapult.hold();
