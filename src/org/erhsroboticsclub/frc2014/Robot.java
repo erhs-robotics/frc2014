@@ -136,6 +136,8 @@ public class Robot extends SimpleRobot {
         }
         else if(collectorStick.getRawButton(RobotMap.COLLECTOR_EJECT)) {
             collector.eject();
+        } else {
+            collector.stopCollector();
         }
     }
     

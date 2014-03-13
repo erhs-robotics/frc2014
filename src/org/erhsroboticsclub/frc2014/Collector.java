@@ -22,11 +22,7 @@ public class Collector {
     }
     
     public void collect() {
-        if(!limitSwitch.get()) {
-           collectMotor.set(COLLECT_MOTOR_SPEED);
-        } else {
-            collectMotor.set(HOLD_MOTOR_SPEED);
-        }
+        collectMotor.set(COLLECT_MOTOR_SPEED);        
     }
     
     public void eject() {
