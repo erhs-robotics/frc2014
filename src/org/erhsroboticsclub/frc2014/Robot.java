@@ -133,8 +133,7 @@ public class Robot extends SimpleRobot {
         // Collect or eject
         if(collectorStick.getRawButton(RobotMap.COLLECTOR_COLLECT)) {
             collector.collect();
-        }
-        else if(collectorStick.getRawButton(RobotMap.COLLECTOR_EJECT)) {
+        } else if(collectorStick.getRawButton(RobotMap.COLLECTOR_EJECT)) {
             collector.eject();
         } else {
             collector.stopCollector();
@@ -262,16 +261,16 @@ public class Robot extends SimpleRobot {
     private void testCollector() {
         Collector.COLLECT_MOTOR_SPEED = SmartDashboard.getNumber("CollectSpeed");
         Collector.HOLD_MOTOR_SPEED    = SmartDashboard.getNumber("HoldSpeed");
-        Collector.ROTATE_MOTOR_SPEED  = SmartDashboard.getNumber("RotateSpeed");        
+        Collector.MAX_ROTATE_MOTOR_SPEED  = SmartDashboard.getNumber("RotateSpeed");        
         
         operatorCollector();
     }
     
     private void testCollectorMotors() {
         if(stick.getY() > 0.8) {
-            collector.rotate(Collector.ROTATE_UP);
+            collector.rotate(Collector.MAX_ROTATE_MOTOR_SPEED);
         } else if(stick.getY() < -0.8) {
-            collector.rotate(Collector.ROTATE_DOWN);
+            collector.rotate(-Collector.MAX_ROTATE_MOTOR_SPEED);
         } else {
             collector.stopRotating();
         }
