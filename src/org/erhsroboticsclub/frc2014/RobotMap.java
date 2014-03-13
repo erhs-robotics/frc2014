@@ -50,5 +50,5 @@ public class RobotMap {
     // Collecter Test
     public static final int TEST_COLLECT       = 5;
     public static final int TEST_EJECT         = 6;
-
+    
 }

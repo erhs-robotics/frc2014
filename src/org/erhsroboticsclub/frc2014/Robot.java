@@ -78,6 +78,61 @@ public class Robot extends SimpleRobot {
     
     /*
      **************************************************************************
+     * Control Functions. 
+     * Break down the various controls of the robot into small routines that 
+     * can be called by the operatorControl() function
+     **************************************************************************
+     */
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // DRIVE                                                                  //
+    ////////////////////////////////////////////////////////////////////////////
+    public void driveWithJoystick() {
+        if (!stick.getRawButton(RobotMap.NO_CHASSIS_ROTATION)) {
+            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, 0 );            
+        } else {
+            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), 0);
+        }
+    }
+    public void driveStraight(double speed, double targetAngle) {
+        double actualAngle = gyro.getAngle();
+        double e = targetAngle - actualAngle;
+        gyroPID.setSetpoint(targetAngle);
+        double out = gyroPID.getPIDResponse(actualAngle);
+        msg.printLn("" + e);
+        drive.mecanumDrive_Cartesian(0, speed, out, 0);
+    }
+    public void operatorDrive() {
+        if(stick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
+            gyro.reset();
+        }
+        if (stick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
+            driveStraight(-stick.getY(), 0);
+            System.out.println("Driving with PID");
+        } else {
+            driveWithJoystick();
+            System.out.println("Driving unaided");
+        }
+    }
+    
+    ////////////////////////////////////////////////////////////////////////////
+    // COLLECTOR                                                              //
+    ////////////////////////////////////////////////////////////////////////////
+    public void operatorCollector() {
+        // Control angle
+        collector.rotate(-collectorStick.getY());
+        
+        // Collect or eject
+        if(collectorStick.getRawButton(RobotMap.COLLECTOR_COLLECT)) {
+            collector.collect();
+        }
+        else if(collectorStick.getRawButton(RobotMap.COLLECTOR_EJECT)) {
+            collector.eject();
+        }
+    }
+    
+    /*
+     **************************************************************************
      * Test functions
      * Break down the parts of the robot into small subsystems and write unit
      * tests for each.
@@ -137,10 +192,15 @@ public class Robot extends SimpleRobot {
         }        
     }
     
-    private void initSmartDashboard() {
+    private void initSmartDashboard() {   
         SmartDashboard.putNumber("KP", 0.06);
         SmartDashboard.putNumber("KI", 0.00);
         SmartDashboard.putNumber("KD", 0.07);
+        
+        SmartDashboard.putNumber("CollectSpeed", 0.29);
+        SmartDashboard.putNumber("HoldSpeed",    0.10);
+        SmartDashboard.putNumber("RotateSpeed",  0.40);
+        SmartDashboard.putNumber("HoldRotation", 0.10);
     }
     
     private void testDrive() {
@@ -189,6 +249,15 @@ public class Robot extends SimpleRobot {
     }
     
     private void testCollector() {
+        Collector.COLLECT_MOTOR_SPEED = SmartDashboard.getNumber("CollectSpeed");
+        Collector.HOLD_MOTOR_SPEED    = SmartDashboard.getNumber("HoldSpeed");
+        Collector.ROTATE_MOTOR_SPEED  = SmartDashboard.getNumber("RotateSpeed");
+        Collector.HOLD_ROTATION_SPEED = SmartDashboard.getNumber("HoldRotation");
+        
+        operatorCollector();
+    }
+    
+    private void testCollectorMotors() {
         if(stick.getY() > 0.8) {
             collector.rotate(Collector.ROTATE_UP);
         } else if(stick.getY() < -0.8) {
@@ -216,61 +285,6 @@ public class Robot extends SimpleRobot {
             catapult.fire();
         }
         catapult.hold();
-    }
-    
-    /*
-     **************************************************************************
-     * Control Functions. 
-     * Break down the various controls of the robot into small routines that 
-     * can be called by the operatorControl() function
-     **************************************************************************
-     */
-    
-    ////////////////////////////////////////////////////////////////////////////
-    // DRIVE                                                                  //
-    ////////////////////////////////////////////////////////////////////////////
-    public void driveWithJoystick() {
-        if (!stick.getRawButton(RobotMap.NO_CHASSIS_ROTATION)) {
-            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, 0 );            
-        } else {
-            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), 0);
-        }
-    }
-    public void driveStraight(double speed, double targetAngle) {
-        double actualAngle = gyro.getAngle();
-        double e = targetAngle - actualAngle;
-        gyroPID.setSetpoint(targetAngle);
-        double out = gyroPID.getPIDResponse(actualAngle);
-        msg.printLn("" + e);
-        drive.mecanumDrive_Cartesian(0, speed, out, 0);
-    }
-    public void operatorDrive() {
-        if(stick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
-            gyro.reset();
-        }
-        if (stick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
-            driveStraight(-stick.getY(), 0);
-            System.out.println("Driving with PID");
-        } else {
-            driveWithJoystick();
-            System.out.println("Driving unaided");
-        }
-    }
-    
-    ////////////////////////////////////////////////////////////////////////////
-    // COLLECTOR                                                              //
-    ////////////////////////////////////////////////////////////////////////////
-    public void operatorCollector() {
-        // Control angle
-        collector.rotate(-collectorStick.getY());
-        
-        // Collect or eject
-        if(collectorStick.getRawButton(RobotMap.COLLECTOR_COLLECT)) {
-            collector.collect();
-        }
-        else if(collectorStick.getRawButton(RobotMap.COLLECTOR_EJECT)) {
-            collector.eject();
-        }
     }
     
     /*
