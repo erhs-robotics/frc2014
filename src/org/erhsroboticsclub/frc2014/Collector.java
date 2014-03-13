@@ -12,9 +12,9 @@ public class Collector {
     public static double HOLD_MOTOR_SPEED = 0;
     public static double MAX_ROTATE_MOTOR_SPEED = 0.4;    
     public final PIDControllerX2 pid;
-    private final AnalogChannel anglePot;
+    public final AnalogChannel anglePot;
     private static final double KP = 0, KI = 0, KD = 0;
-    private static final double MIN_ANGLE = 1, MAX_ANGLE = 4;
+    private static final double MIN_POT_VALUE = 1, MAX_POT_VALUE = 4;
     
     
     public Collector() {
@@ -49,8 +49,12 @@ public class Collector {
         rotateMotor2.set(0);        
     }
     
-    public void setSetpoint(double angle) {        
-        pid.setSetpoint(MathUtils.map(angle, 0, 90, MIN_ANGLE, MAX_ANGLE));
+    public void setTargetAngle(double angle) {        
+        pid.setSetpoint(MathUtils.map(angle, 0, 90, MIN_POT_VALUE, MAX_POT_VALUE));
+    }
+    
+    public double getCurrentAngle() {
+        return MathUtils.map(anglePot.getAverageVoltage(), MIN_POT_VALUE, MAX_POT_VALUE, 0, 90);
     }
     
     public void update() {
