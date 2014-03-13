@@ -32,12 +32,12 @@ public class RobotMap {
     public static final int COLLECTOR_STICK = 2;
     
     // Drive Joystick Buttons
-    public static final int NO_CHASSIS_ROTATION = 1;
-    public static final int DRIVE_STRAIGHT      = 9;
+    public static final int ALLOW_CHASSIS_ROTATION = 1;
+    public static final int DRIVE_STRAIGHT      = 2;
     
     // Collector Joystick Buttons
     public static final int COLLECTOR_COLLECT = 1;
-    public static final int COLLECTOR_EJECT   = 2;
+    public static final int COLLECTOR_EJECT   = 3;
     
     // Latch Test
     public static final int TEST_SET_LATCHED   = 5;

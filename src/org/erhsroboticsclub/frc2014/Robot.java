@@ -29,7 +29,7 @@ public class Robot extends SimpleRobot {
     private static final long UPDATE_FREQ = 20;
     private static final long AUTO_DRIVE_TIME = 100;
     private static final int AUTO_DRIVE_SPEED = 1;
-    private static final double AUTO_BIAS = 2;
+    private static double AUTO_BIAS = 2;
 
     public void robotInit() {
         // Subsystems
@@ -59,7 +59,7 @@ public class Robot extends SimpleRobot {
 
     public void autonomous() {
         gyro.reset();
-        
+        AUTO_BIAS = SmartDashboard.getNumber("AutoBias");
         boolean driftLeft = autoModePot.getAverageVoltage() >= 2.5;
         double bias = driftLeft ? -AUTO_BIAS : AUTO_BIAS;
         
@@ -95,10 +95,10 @@ public class Robot extends SimpleRobot {
     // DRIVE                                                                  //
     ////////////////////////////////////////////////////////////////////////////
     public void driveWithJoystick() {
-        if (!stick.getRawButton(RobotMap.NO_CHASSIS_ROTATION)) {
-            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, 0 );            
+        if (stick.getRawButton(RobotMap.ALLOW_CHASSIS_ROTATION)) {
+            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), 0);                        
         } else {
-            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getZ(), 0);
+            drive.mecanumDrive_Cartesian(stick.getX(), stick.getY(), 0, 0 );
         }
     }
     public void driveStraight(double speed, double targetAngle, double bias) {
@@ -209,6 +209,8 @@ public class Robot extends SimpleRobot {
         SmartDashboard.putNumber("HoldSpeed",    0.10);
         SmartDashboard.putNumber("RotateSpeed",  0.40);
         SmartDashboard.putNumber("HoldRotation", 0.10);
+        
+        SmartDashboard.putNumber("AutoBias", AUTO_BIAS);
     }
     
     private void testDrive() {
