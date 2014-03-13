@@ -15,6 +15,7 @@ public class Collector {
     public final AnalogChannel anglePot;
     private static final double KP = 0, KI = 0, KD = 0;
     private static final double MIN_POT_VALUE = 1, MAX_POT_VALUE = 4;
+    public static final double HOLD_ANGLE = 70, LOAD_ANGLE = 30;
     
     
     public Collector() {

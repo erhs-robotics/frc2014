@@ -133,7 +133,9 @@ public class Robot extends SimpleRobot {
     ////////////////////////////////////////////////////////////////////////////
     public void operatorCollector() {
         // Control angle
-        collector.rotate(-collectorStick.getY());
+        double angle = -collectorStick.getY();
+        angle = MathUtils.map(angle, 0, 1, Collector.HOLD_ANGLE, Collector.LOAD_ANGLE);
+        collector.setTargetAngle(angle);
 
         // Collect or eject
         if (collectorStick.getRawButton(RobotMap.COLLECTOR_COLLECT)) {
@@ -143,6 +145,7 @@ public class Robot extends SimpleRobot {
         } else {
             collector.stopCollector();
         }
+        collector.update();
     }
 
     /*
