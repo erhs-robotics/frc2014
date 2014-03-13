@@ -60,10 +60,12 @@ public class Robot extends SimpleRobot {
     public void autonomous() {
         gyro.reset();
         AUTO_BIAS = SmartDashboard.getNumber("AutoBias");
+        msg.printLn("Pot: "+autoModePot.getAverageVoltage());
         boolean driftLeft = autoModePot.getAverageVoltage() >= 2.5;
         double bias = driftLeft ? -AUTO_BIAS : AUTO_BIAS;
         
         long time = System.currentTimeMillis();
+        // may have to hold collecter up
         while(System.currentTimeMillis() - time < AUTO_DRIVE_TIME) {
             driveStraight(AUTO_DRIVE_SPEED, 0, bias);
         }
