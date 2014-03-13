@@ -156,12 +156,12 @@ public class Robot extends SimpleRobot {
         final int SELECT = 0, DRIVE = 1, WINCH = 2, LATCH = 3, COLLECTOR = 4,
                 CATAPULT = 5, COLLECTOR_PID = 6;
         String[] MODE = new String[7];
-        MODE[SELECT] = "Select";
-        MODE[DRIVE] = "Drive";
-        MODE[WINCH] = "Winch";
-        MODE[LATCH] = "Latch";
-        MODE[COLLECTOR] = "Collector";
-        MODE[CATAPULT] = "Catapult";
+        MODE[SELECT]        = "Select";
+        MODE[DRIVE]         = "Drive";
+        MODE[WINCH]         = "Winch";
+        MODE[LATCH]         = "Latch";
+        MODE[COLLECTOR]     = "Collector";
+        MODE[CATAPULT]      = "Catapult";
         MODE[COLLECTOR_PID] = "Collector PID";
         int mode = 0;
 
