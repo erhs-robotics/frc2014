@@ -3,6 +3,7 @@ package org.erhsroboticsclub.frc2014;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.erhsroboticsclub.frc2014.utilities.JoystickX;
+import org.erhsroboticsclub.frc2014.utilities.MathUtils;
 import org.erhsroboticsclub.frc2014.utilities.Messenger;
 import org.erhsroboticsclub.frc2014.utilities.PIDControllerX2;
 
@@ -65,11 +66,13 @@ public class Robot extends SimpleRobot {
         double bias = driftLeft ? -AUTO_BIAS : AUTO_BIAS;
         
         long time = System.currentTimeMillis();
-        // may have to hold collecter up
+        // may have to hold collector up
         while(System.currentTimeMillis() - time < AUTO_DRIVE_TIME) {
             driveStraight(AUTO_DRIVE_SPEED, 0, bias);
         }
-        collector.eject(); // Eject doesn't work yet!    
+        // may have to hold collector up
+        collector.eject();
+        
     }
 
     public void operatorControl() {
@@ -152,14 +155,15 @@ public class Robot extends SimpleRobot {
 
     public void test() {
         final int SELECT = 0, DRIVE = 1, WINCH = 2, LATCH = 3, COLLECTOR = 4, 
-                  CATAPULT = 5;
-        String[] MODE   = new String[6];
-        MODE[SELECT]    = "Select";
-        MODE[DRIVE]     = "Drive";
-        MODE[WINCH]     = "Winch";
-        MODE[LATCH]     = "Latch";
-        MODE[COLLECTOR] = "Collector";
-        MODE[CATAPULT]  = "Catapult";
+                  CATAPULT = 5, COLLECTOR_PID = 6;
+        String[] MODE       = new String[7];
+        MODE[SELECT]        = "Select";
+        MODE[DRIVE]         = "Drive";
+        MODE[WINCH]         = "Winch";
+        MODE[LATCH]         = "Latch";
+        MODE[COLLECTOR]     = "Collector";
+        MODE[CATAPULT]      = "Catapult";
+        MODE[COLLECTOR_PID] = "Collector PID";
         int mode = 0;
         
         // init SD!
@@ -197,7 +201,9 @@ public class Robot extends SimpleRobot {
                 case CATAPULT:
                     testCatapult();
                     break;
-                    
+                case COLLECTOR_PID:
+                    testCollectorPID();
+                    break;                    
             }
             while(System.currentTimeMillis() - startTime < UPDATE_FREQ);
         }        
@@ -268,25 +274,15 @@ public class Robot extends SimpleRobot {
         operatorCollector();
     }
     
-    private void testCollectorMotors() {
-        if(stick.getY() > 0.8) {
-            collector.rotate(Collector.MAX_ROTATE_MOTOR_SPEED);
-        } else if(stick.getY() < -0.8) {
-            collector.rotate(-Collector.MAX_ROTATE_MOTOR_SPEED);
-        } else {
-            collector.stopRotating();
-        }
-        
-        if(stick.isButtonDown(RobotMap.TEST_COLLECT)) {
-            collector.collect();
-        } else if(stick.isButtonDown(RobotMap.TEST_EJECT)) {
-            collector.eject();
-        } else {
-            collector.stopCollector();
-        }   
-        
-        Collector.COLLECT_MOTOR_SPEED = stick.getThrottle();
-        msg.printOnLn("" + Collector.COLLECT_MOTOR_SPEED, DriverStationLCD.Line.kUser4);
+    private void testCollectorPID() {
+        double p = SmartDashboard.getNumber("KP", 0.06);
+        double i = SmartDashboard.getNumber("KI", 0);
+        double d = SmartDashboard.getNumber("KD", 0);
+        collector.pid.setKP(p); collector.pid.setKI(i); collector.pid.setKD(d);
+        double angle = collectorStick.getZ(); // might be getThrottle() instead
+        angle = MathUtils.map(angle, -1, 1, 0, 90);
+        collector.setSetpoint(angle);
+        collector.update();
     }
     
     private void testCatapult() {
