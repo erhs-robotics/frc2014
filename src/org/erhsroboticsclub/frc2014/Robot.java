@@ -60,7 +60,7 @@ public class Robot extends SimpleRobot {
     public void autonomous() {
         gyro.reset();
         
-        boolean driftLeft = autoModePot.getAverageVoltage() <= 2.5;
+        boolean driftLeft = autoModePot.getAverageVoltage() >= 2.5;
         double bias = driftLeft ? -AUTO_BIAS : AUTO_BIAS;
         
         long time = System.currentTimeMillis();
