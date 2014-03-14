@@ -232,6 +232,7 @@ public class Robot extends SimpleRobot {
             driveWithJoystick();
             System.out.println("Driving unaided");
         }
+        msg.printOnLn("Angle: " + gyro.getAngle(), DriverStationLCD.Line.kUser2);
     }
     
     private void testLatch() { 
