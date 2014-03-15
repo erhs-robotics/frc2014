@@ -21,10 +21,10 @@ public class RobotMap {
     // Digital Input    
     
     // Analog Input
-    public static final int GYRO          = 7;
+    public static final int GYRO          = 1;
     public static final int WINCH_POT     = 3;
-    public static final int LATCH_POT     = 1;
-    public static final int AUTO_MODE_POT = 8;
+    public static final int LATCH_POT     = 7;
+    public static final int AUTO_MODE_POT = 2;
     
     // USB Input (Joysticks)
     public static final int DRIVE_JOYSTICK  = 1;

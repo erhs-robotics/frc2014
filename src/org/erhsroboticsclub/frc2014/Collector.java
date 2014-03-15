@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj.Talon;
 public class Collector {
     
     private final Talon collectMotor, rotateMotor1, rotateMotor2;    
-    public static double COLLECT_MOTOR_SPEED = .29;
+    public static double COLLECT_MOTOR_SPEED = -.4;
     public static double HOLD_MOTOR_SPEED = 0;
-    public static double MAX_ROTATE_MOTOR_SPEED = 0.4;    
+    public static double MAX_ROTATE_MOTOR_SPEED = 0.7;    
     
     public Collector() {
         collectMotor = new Talon(RobotMap.COLLECTOR_COLLECT_MOTOR);

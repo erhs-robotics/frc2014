@@ -27,7 +27,7 @@ public class Robot extends SimpleRobot {
     
     // Constants
     private static final long UPDATE_FREQ = 20;
-    private static final long AUTO_DRIVE_TIME = 100;
+    private static final double AUTO_DRIVE_TIME = 0.8;
     private static final int AUTO_DRIVE_SPEED = 1;
     private static double AUTO_BIAS = 2;
 
@@ -39,8 +39,8 @@ public class Robot extends SimpleRobot {
                 new Talon(RobotMap.BOTTOM_LEFT_MOTOR),
                 new Talon(RobotMap.TOP_RIGHT_MOTOR),
                 new Talon(RobotMap.BOTTOM_RIGHT_MOTOR));
-        drive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
-        drive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
+        drive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+        drive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
 
         // Joysticks
         driveStick = new JoystickX(RobotMap.DRIVE_JOYSTICK);
@@ -58,10 +58,11 @@ public class Robot extends SimpleRobot {
     }
 
     public void autonomous() {
+        /*
         gyro.reset();
         AUTO_BIAS = SmartDashboard.getNumber("AutoBias");
         msg.printLn("Pot: "+autoModePot.getAverageVoltage());
-        boolean driftLeft = autoModePot.getAverageVoltage() >= 2.5;
+        boolean driftLefppt = autoModePot.getAverageVoltage() >= 2.5;
         double bias = driftLeft ? -AUTO_BIAS : AUTO_BIAS;
         
         long time = System.currentTimeMillis();
@@ -70,6 +71,18 @@ public class Robot extends SimpleRobot {
             driveStraight(AUTO_DRIVE_SPEED, 0, bias);
         }
         collector.eject(); // Eject doesn't work yet!    
+        */
+        
+        
+        try {
+           drive.mecanumDrive_Cartesian(0, -AUTO_DRIVE_SPEED, 0, 0);        
+            Timer.delay(AUTO_DRIVE_TIME);
+            drive.mecanumDrive_Cartesian(0, 0, 0, 0);
+        } catch(Exception e) {
+            msg.printLn("Auto failed!");
+        }
+        
+        
     }
 
     public void operatorControl() {
@@ -98,7 +111,7 @@ public class Robot extends SimpleRobot {
     ////////////////////////////////////////////////////////////////////////////
     public void driveWithJoystick() {
         if (driveStick.getRawButton(RobotMap.ALLOW_CHASSIS_ROTATION)) {
-            drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), driveStick.getZ(), 0);                        
+            drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), -driveStick.getZ(), 0);                        
         } else {
             drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), 0, 0 );
         }
@@ -123,6 +136,7 @@ public class Robot extends SimpleRobot {
             driveWithJoystick();
             System.out.println("Driving unaided");
         }
+        System.out.println(gyro.getAngle());
     }
     
     ////////////////////////////////////////////////////////////////////////////
