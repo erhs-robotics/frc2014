@@ -7,6 +7,7 @@
 package edu.wpi.first.wpilibj.templates;
 
 import edu.wpi.first.wpilibj.SimpleRobot;
+import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.camera.AxisCamera;
 import edu.wpi.first.wpilibj.camera.AxisCameraException;
 import edu.wpi.first.wpilibj.image.BinaryImage;
@@ -32,17 +33,18 @@ public class Vision extends SimpleRobot {
     private AxisCamera camera;
 
     protected void robotInit() {
-        System.out.println("Starting up...");
+        Messenger.println("Starting up");
+        Watchdog.getInstance().kill();
         camera = AxisCamera.getInstance();
-        System.out.println("Done!");
+        Messenger.println("Done.");
+        
+        Messenger.println("Welcome!");
+        
     }
 
     public ParticleAnalysisReport[] getParticles(ColorImage img) throws NIVisionException {
         
-        criteria.addCriteria(
-                NNIVision.MeasurementType.IMAQ_MT_BOUNDING_RECT_WIDTH, , 400, false);
-        criteria.addCriteria(
-                NIVision.MeasurementType.IMAQ_MEASUREMENT_TYPE_SIZE_GUARD.IMAQ_MT_BOUNDING_RECT_HEIGHT, 40, 400, false);
+      
 
         BinaryImage binaryImage;
         BinaryImage cleanImage;
@@ -75,10 +77,10 @@ public class Vision extends SimpleRobot {
     public void autonomous() {
         try {
             while (isAutonomous() && isEnabled()) {
-                System.out.println("Searching...");
+                Messenger.println("Searching...");
                 ParticleAnalysisReport[] parts = getParticles(camera.getImage());
                 
-                System.out.println("Found " + parts.length + " targets");
+                Messenger.println("Found " + parts.length + " targets");
             }
         } catch (AxisCameraException ex) {
             ex.printStackTrace();
