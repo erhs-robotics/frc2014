@@ -3,11 +3,12 @@ package org.erhsroboticsclub.frc2014;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.erhsroboticsclub.frc2014.utilities.JoystickX;
+import org.erhsroboticsclub.frc2014.utilities.MathUtils;
 import org.erhsroboticsclub.frc2014.utilities.Messenger;
 import org.erhsroboticsclub.frc2014.utilities.PIDControllerX2;
 
 public class Robot extends SimpleRobot {
-    
+
     // Subsystems
     Catapult catapult;
     Collector collector;
@@ -24,7 +25,7 @@ public class Robot extends SimpleRobot {
 
     // Utility classes
     Messenger msg;
-    
+
     // Constants
     private static final long UPDATE_FREQ = 20;
     private static final double AUTO_DRIVE_TIME = 0.8;
@@ -61,18 +62,19 @@ public class Robot extends SimpleRobot {
         /*
         gyro.reset();
         AUTO_BIAS = SmartDashboard.getNumber("AutoBias");
+
         msg.printLn("Pot: "+autoModePot.getAverageVoltage());
         boolean driftLefppt = autoModePot.getAverageVoltage() >= 2.5;
         double bias = driftLeft ? -AUTO_BIAS : AUTO_BIAS;
-        
+
         long time = System.currentTimeMillis();
-        // may have to hold collecter up
-        while(System.currentTimeMillis() - time < AUTO_DRIVE_TIME) {
+        // may have to hold collector up
+        while (System.currentTimeMillis() - time < AUTO_DRIVE_TIME) {
             driveStraight(AUTO_DRIVE_SPEED, 0, bias);
         }
+
         collector.eject(); // Eject doesn't work yet!    
-        */
-        
+        */        
         
         try {
            drive.mecanumDrive_Cartesian(0, -AUTO_DRIVE_SPEED, 0, 0);        
@@ -81,23 +83,21 @@ public class Robot extends SimpleRobot {
         } catch(Exception e) {
             msg.printLn("Auto failed!");
         }
-        
-        
     }
 
     public void operatorControl() {
         gyro.reset();
-        
+
         while (isEnabled() && isOperatorControl()) {
             long startTime = System.currentTimeMillis();
-            
+
             operatorDrive();
             operatorCollector();
-            
-            while(System.currentTimeMillis() - startTime < UPDATE_FREQ);
+
+            while (System.currentTimeMillis() - startTime < UPDATE_FREQ);
         }
     }
-    
+
     /*
      **************************************************************************
      * Control Functions. 
@@ -105,7 +105,6 @@ public class Robot extends SimpleRobot {
      * can be called by the operatorControl() function
      **************************************************************************
      */
-    
     ////////////////////////////////////////////////////////////////////////////
     // DRIVE                                                                  //
     ////////////////////////////////////////////////////////////////////////////
@@ -116,6 +115,7 @@ public class Robot extends SimpleRobot {
             drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), 0, 0 );
         }
     }
+
     public void driveStraight(double speed, double targetAngle, double bias) {
         double actualAngle = gyro.getAngle();
         double e = targetAngle - actualAngle;
@@ -124,7 +124,7 @@ public class Robot extends SimpleRobot {
         msg.printLn("" + e);
         drive.mecanumDrive_Cartesian(0, speed, out + bias, 0);
     }
-   
+
     public void operatorDrive() {
         if(driveStick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
             gyro.reset();
@@ -138,24 +138,27 @@ public class Robot extends SimpleRobot {
         }
         System.out.println(gyro.getAngle());
     }
-    
+
     ////////////////////////////////////////////////////////////////////////////
     // COLLECTOR                                                              //
     ////////////////////////////////////////////////////////////////////////////
     public void operatorCollector() {
         // Control angle
-        collector.rotate(-collectorStick.getY());
-        
+        double angle = -collectorStick.getY();
+        angle = MathUtils.map(angle, 0, 1, Collector.HOLD_ANGLE, Collector.LOAD_ANGLE);
+        collector.setTargetAngle(angle);
+
         // Collect or eject
-        if(collectorStick.getRawButton(RobotMap.COLLECTOR_COLLECT)) {
+        if (collectorStick.getRawButton(RobotMap.COLLECTOR_COLLECT)) {
             collector.collect();
-        } else if(collectorStick.getRawButton(RobotMap.COLLECTOR_EJECT)) {
+        } else if (collectorStick.getRawButton(RobotMap.COLLECTOR_EJECT)) {
             collector.eject();
         } else {
             collector.stopCollector();
         }
+        collector.update();
     }
-    
+
     /*
      **************************************************************************
      * Test functions
@@ -163,19 +166,18 @@ public class Robot extends SimpleRobot {
      * tests for each.
      **************************************************************************
      */
-
     public void test() {
-        final int SELECT = 0, DRIVE = 1, WINCH = 2, LATCH = 3, COLLECTOR = 4, 
-                  CATAPULT = 5;
-        String[] MODE   = new String[6];
-        MODE[SELECT]    = "Select";
-        MODE[DRIVE]     = "Drive";
-        MODE[WINCH]     = "Winch";
-        MODE[LATCH]     = "Latch";
-        MODE[COLLECTOR] = "Collector";
-        MODE[CATAPULT]  = "Catapult";
+        final int SELECT = 0, DRIVE = 1, WINCH = 2, LATCH = 3, COLLECTOR = 4,
+                COLLECTOR_PID = 5;
+        String[] MODE = new String[6];
+        MODE[SELECT]        = "Select";
+        MODE[DRIVE]         = "Drive";
+        MODE[WINCH]         = "Winch";
+        MODE[LATCH]         = "Latch";
+        MODE[COLLECTOR]     = "Collector";        
+        MODE[COLLECTOR_PID] = "Collector PID";
         int mode = 0;
-        
+
         // init SD!
         initSmartDashboard();
 
@@ -208,35 +210,36 @@ public class Robot extends SimpleRobot {
                 case COLLECTOR:
                     testCollector();
                     break;
-                case CATAPULT:
-                    testCatapult();
+                case COLLECTOR_PID:
+                    testCollectorPID();
                     break;
-                    
             }
-            while(System.currentTimeMillis() - startTime < UPDATE_FREQ);
-        }        
+            while (System.currentTimeMillis() - startTime < UPDATE_FREQ);
+        }
     }
-    
-    private void initSmartDashboard() {   
+
+    private void initSmartDashboard() {
         SmartDashboard.putNumber("KP", 0.06);
         SmartDashboard.putNumber("KI", 0.00);
         SmartDashboard.putNumber("KD", 0.07);
-        
+
         SmartDashboard.putNumber("CollectSpeed", 0.29);
-        SmartDashboard.putNumber("HoldSpeed",    0);
-        SmartDashboard.putNumber("RotateSpeed",  0.40);        
-        
+        SmartDashboard.putNumber("HoldSpeed", 0);
+        SmartDashboard.putNumber("RotateSpeed", 0.40);
+
         SmartDashboard.putNumber("AutoBias", AUTO_BIAS);
     }
-    
+
     private void testDrive() {
         /* Update PID from SmartDashboard */
         double p = SmartDashboard.getNumber("KP", 0.06);
         double i = SmartDashboard.getNumber("KI", 0);
         double d = SmartDashboard.getNumber("KD", 0.07);
+
         gyroPID.setKP(p); gyroPID.setKI(i); gyroPID.setKD(d);
         
         if(driveStick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
+
             gyro.reset();
         }
         if (driveStick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
@@ -248,20 +251,21 @@ public class Robot extends SimpleRobot {
         }
         msg.printOnLn("Angle: " + gyro.getAngle(), DriverStationLCD.Line.kUser2);
     }
-    
-    private void testLatch() { 
+
+
+    private void testLatch() {
 
         if(driveStick.getRawButton(RobotMap.TEST_SET_LATCHED)) {
             msg.printOnLn("Latched", msg.LINE[4]);
            catapult.setLatched();
-        } else if(driveStick.getRawButton(RobotMap.TEST_SET_UNLATCHED)) {
+        } else if(!driveStick.getRawButton(RobotMap.TEST_SET_UNLATCHED)) {        
             catapult.setUnlatched();
             msg.printOnLn("unLatched", msg.LINE[4]);
-        }      
-        
-        catapult.hold();       
+        }
+
+        catapult.hold();
     }
-    
+
     private void testWinch() {
         testLatch();
         if(driveStick.getRawButton(RobotMap.TEST_WIND_WINCH)) {
@@ -274,14 +278,16 @@ public class Robot extends SimpleRobot {
         catapult.latchMotor1.setRaw((int)Catapult.map(driveStick.getY(), -1, 1, 0, 255));
         catapult.latchMotor2.setRaw((int)Catapult.map(driveStick.getY(), -1, 1, 255, 0));
     }
-    
+
     private void testCollector() {
         Collector.COLLECT_MOTOR_SPEED = SmartDashboard.getNumber("CollectSpeed");
-        Collector.HOLD_MOTOR_SPEED    = SmartDashboard.getNumber("HoldSpeed");
-        Collector.MAX_ROTATE_MOTOR_SPEED  = SmartDashboard.getNumber("RotateSpeed");        
-        
+        Collector.HOLD_MOTOR_SPEED = SmartDashboard.getNumber("HoldSpeed");
+        Collector.MAX_ROTATE_MOTOR_SPEED = SmartDashboard.getNumber("RotateSpeed");
+        msg.printOnLn("Pot: " + collector.anglePot.getAverageValue(), DriverStationLCD.Line.kUser1);
         operatorCollector();
+
     }
+
     
     private void testCollectorMotors() {
         if(driveStick.getY() > 0.8) {
@@ -303,16 +309,24 @@ public class Robot extends SimpleRobot {
         Collector.COLLECT_MOTOR_SPEED = driveStick.getThrottle();
         msg.printOnLn("" + Collector.COLLECT_MOTOR_SPEED, DriverStationLCD.Line.kUser4);
     }
-    
-    private void testCatapult() {
-        if(driveStick.getRawButton(RobotMap.TEST_PRIME)) {
-            catapult.prime();
-        } else if(driveStick.getRawButton(RobotMap.TEST_FIRE)) {
-            catapult.fire();
-        }
-        catapult.hold();
+
+
+    private void testCollectorPID() {
+        double p = SmartDashboard.getNumber("KP", 0.06);
+        double i = SmartDashboard.getNumber("KI", 0);
+        double d = SmartDashboard.getNumber("KD", 0);
+        collector.pid.setKP(p);
+        collector.pid.setKI(i);
+        collector.pid.setKD(d);
+        double angle = collectorStick.getZ(); // might be getThrottle() instead
+        angle = MathUtils.map(angle, -1, 1, 0, 90);
+        collector.setTargetAngle(angle);
+        collector.update();
+
+        msg.printOnLn("Set: " + angle, DriverStationLCD.Line.kUser2);
+        msg.printOnLn("Cur: " + collector.getCurrentAngle(), DriverStationLCD.Line.kUser3);
     }
-    
+
     /*
      **************************************************************************
      * Private Helper Functions.
