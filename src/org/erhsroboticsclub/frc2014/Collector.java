@@ -39,7 +39,7 @@ public class Collector {
     }
     
     public void rotate(double speed) {
-        double scaledSpeed = Catapult.map(speed, -1, 1, -MAX_ROTATE_MOTOR_SPEED, MAX_ROTATE_MOTOR_SPEED);
+        double scaledSpeed = MathUtils.map(speed, -1, 1, -MAX_ROTATE_MOTOR_SPEED, MAX_ROTATE_MOTOR_SPEED);
         rotateMotor1.set(scaledSpeed);
         rotateMotor2.set(scaledSpeed);          
     }

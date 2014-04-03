@@ -9,8 +9,7 @@ import org.erhsroboticsclub.frc2014.utilities.PIDControllerX2;
 
 public class Robot extends SimpleRobot {
 
-    // Subsystems
-    Catapult catapult;
+    // Subsystems    
     Collector collector;
     RobotDrive drive;
 
@@ -33,8 +32,7 @@ public class Robot extends SimpleRobot {
     private static double AUTO_BIAS = 2;
 
     public void robotInit() {
-        // Subsystems
-        catapult = new Catapult();
+        // Subsystems        
         collector = new Collector();
         drive = new RobotDrive(new Talon(RobotMap.TOP_LEFT_MOTOR),
                 new Talon(RobotMap.BOTTOM_LEFT_MOTOR),
@@ -109,20 +107,15 @@ public class Robot extends SimpleRobot {
     // DRIVE                                                                  //
     ////////////////////////////////////////////////////////////////////////////
     public void driveWithJoystick() {
-        if (driveStick.getRawButton(RobotMap.ALLOW_CHASSIS_ROTATION)) {
-            drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), -driveStick.getZ(), 0);                        
-        } else {
-            drive.mecanumDrive_Cartesian(driveStick.getX(), driveStick.getY(), 0, 0 );
-        }
+        drive.arcadeDrive(driveStick);
     }
 
     public void driveStraight(double speed, double targetAngle, double bias) {
         double actualAngle = gyro.getAngle();
         double e = targetAngle - actualAngle;
         gyroPID.setSetpoint(targetAngle);
-        double out = gyroPID.getPIDResponse(actualAngle);
-        msg.printLn("" + e);
-        drive.mecanumDrive_Cartesian(0, speed, out + bias, 0);
+        double out = gyroPID.getPIDResponse(actualAngle);        
+        drive.tankDrive(speed + out, speed - out);        
     }
 
     public void operatorDrive() {
@@ -130,7 +123,7 @@ public class Robot extends SimpleRobot {
             gyro.reset();
         }
         if (driveStick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
-            driveStraight(-driveStick.getY(), 0, 0);
+            driveStraight(driveStick.getY(), 0, 0);
             System.out.println("Driving with PID");
         } else {
             driveWithJoystick();
@@ -167,13 +160,11 @@ public class Robot extends SimpleRobot {
      **************************************************************************
      */
     public void test() {
-        final int SELECT = 0, DRIVE = 1, WINCH = 2, LATCH = 3, COLLECTOR = 4,
-                COLLECTOR_PID = 5;
-        String[] MODE = new String[6];
+        final int SELECT = 0, DRIVE = 1, COLLECTOR = 2,
+                COLLECTOR_PID = 3;
+        String[] MODE = new String[4];
         MODE[SELECT]        = "Select";
-        MODE[DRIVE]         = "Drive";
-        MODE[WINCH]         = "Winch";
-        MODE[LATCH]         = "Latch";
+        MODE[DRIVE]         = "Drive";        
         MODE[COLLECTOR]     = "Collector";        
         MODE[COLLECTOR_PID] = "Collector PID";
         int mode = 0;
@@ -200,12 +191,6 @@ public class Robot extends SimpleRobot {
                     break;
                 case DRIVE:
                     testDrive();
-                    break;
-                case WINCH:
-                    testWinch();
-                    break;
-                case LATCH:
-                    testLatch();
                     break;
                 case COLLECTOR:
                     testCollector();
@@ -239,7 +224,6 @@ public class Robot extends SimpleRobot {
         gyroPID.setKP(p); gyroPID.setKI(i); gyroPID.setKD(d);
         
         if(driveStick.buttonPressed(RobotMap.DRIVE_STRAIGHT)) {
-
             gyro.reset();
         }
         if (driveStick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
@@ -250,33 +234,6 @@ public class Robot extends SimpleRobot {
             System.out.println("Driving unaided");
         }
         msg.printOnLn("Angle: " + gyro.getAngle(), DriverStationLCD.Line.kUser2);
-    }
-
-
-    private void testLatch() {
-
-        if(driveStick.getRawButton(RobotMap.TEST_SET_LATCHED)) {
-            msg.printOnLn("Latched", msg.LINE[4]);
-           catapult.setLatched();
-        } else if(!driveStick.getRawButton(RobotMap.TEST_SET_UNLATCHED)) {        
-            catapult.setUnlatched();
-            msg.printOnLn("unLatched", msg.LINE[4]);
-        }
-
-        catapult.hold();
-    }
-
-    private void testWinch() {
-        testLatch();
-        if(driveStick.getRawButton(RobotMap.TEST_WIND_WINCH)) {
-            catapult.windWinch();
-        } else if(driveStick.getRawButton(RobotMap.TEST_UNWIND_WINCH)) {
-            catapult.unwindWinch();
-        } else {
-            catapult.stopWinch();
-        }
-        catapult.latchMotor1.setRaw((int)Catapult.map(driveStick.getY(), -1, 1, 0, 255));
-        catapult.latchMotor2.setRaw((int)Catapult.map(driveStick.getY(), -1, 1, 255, 0));
     }
 
     private void testCollector() {
