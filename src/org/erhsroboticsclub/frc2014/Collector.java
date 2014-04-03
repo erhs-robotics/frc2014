@@ -15,7 +15,7 @@ public class Collector {
     public final AnalogChannel anglePot;
     private static final double KP = 0, KI = 0, KD = 0;
     private static final double MIN_POT_VALUE = 1, MAX_POT_VALUE = 4;
-    public static final double HOLD_ANGLE = 70, LOAD_ANGLE = 30;
+    public static final double DEPLOY_ANGLE = 30, STOW_ANGLE = 70;
     
     public Collector() {
         collectMotor = new Talon(RobotMap.COLLECTOR_COLLECT_MOTOR);
@@ -34,6 +34,14 @@ public class Collector {
         collectMotor.set(-COLLECT_MOTOR_SPEED);
     }
     
+    public void stow() {
+        pid.setSetpoint(STOW_ANGLE);
+    }
+    
+    public void deploy() {
+        pid.setSetpoint(DEPLOY_ANGLE);
+    }
+    
     public void stopCollector() {
         collectMotor.set(0);
     }
@@ -41,7 +49,7 @@ public class Collector {
     public void rotate(double speed) {
         double scaledSpeed = MathUtils.map(speed, -1, 1, -MAX_ROTATE_MOTOR_SPEED, MAX_ROTATE_MOTOR_SPEED);
         rotateMotor1.set(scaledSpeed);
-        rotateMotor2.set(scaledSpeed);          
+        rotateMotor2.set(-scaledSpeed);          
     }
     
     public void stopRotating() {
@@ -55,11 +63,11 @@ public class Collector {
     
     public double getCurrentAngle() {
         return MathUtils.map(anglePot.getAverageVoltage(), MIN_POT_VALUE, MAX_POT_VALUE, 0, 90);
-    }
+    }   
     
     public void update() {
         double out = pid.getPIDResponse(anglePot.getAverageVoltage());
         rotateMotor1.set(out);
-        rotateMotor2.set(out);
+        rotateMotor2.set(-out);        
     }
 }

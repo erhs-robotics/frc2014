@@ -75,9 +75,9 @@ public class Robot extends SimpleRobot {
         */        
         
         try {
-           drive.mecanumDrive_Cartesian(0, -AUTO_DRIVE_SPEED, 0, 0);        
+            drive.tankDrive(AUTO_DRIVE_SPEED, AUTO_DRIVE_SPEED);                   
             Timer.delay(AUTO_DRIVE_TIME);
-            drive.mecanumDrive_Cartesian(0, 0, 0, 0);
+            drive.tankDrive(0, 0);
         } catch(Exception e) {
             msg.printLn("Auto failed!");
         }
@@ -111,8 +111,7 @@ public class Robot extends SimpleRobot {
     }
 
     public void driveStraight(double speed, double targetAngle, double bias) {
-        double actualAngle = gyro.getAngle();
-        double e = targetAngle - actualAngle;
+        double actualAngle = gyro.getAngle();        
         gyroPID.setSetpoint(targetAngle);
         double out = gyroPID.getPIDResponse(actualAngle);        
         drive.tankDrive(speed + out, speed - out);        
@@ -136,11 +135,12 @@ public class Robot extends SimpleRobot {
     // COLLECTOR                                                              //
     ////////////////////////////////////////////////////////////////////////////
     public void operatorCollector() {
-        // Control angle
-        double angle = -collectorStick.getY();
-        angle = MathUtils.map(angle, 0, 1, Collector.HOLD_ANGLE, Collector.LOAD_ANGLE);
-        collector.setTargetAngle(angle);
-
+        // Control angle        
+        if(collectorStick.getRawButton(RobotMap.COLLECTOR_STOWED)) {
+            collector.stow();            
+        } else if(collectorStick.getRawButton(RobotMap.COLLECTOR_DEPLOYED)) {
+            collector.deploy();
+        }
         // Collect or eject
         if (collectorStick.getRawButton(RobotMap.COLLECTOR_COLLECT)) {
             collector.collect();
@@ -206,11 +206,12 @@ public class Robot extends SimpleRobot {
     private void initSmartDashboard() {
         SmartDashboard.putNumber("KP", 0.06);
         SmartDashboard.putNumber("KI", 0.00);
-        SmartDashboard.putNumber("KD", 0.07);
+        SmartDashboard.putNumber("KD", 0.0);
 
         SmartDashboard.putNumber("CollectSpeed", 0.29);
         SmartDashboard.putNumber("HoldSpeed", 0);
         SmartDashboard.putNumber("RotateSpeed", 0.40);
+        SmartDashboard.putNumber("Setpoint", 30);
 
         SmartDashboard.putNumber("AutoBias", AUTO_BIAS);
     }
@@ -237,16 +238,9 @@ public class Robot extends SimpleRobot {
     }
 
     private void testCollector() {
-        Collector.COLLECT_MOTOR_SPEED = SmartDashboard.getNumber("CollectSpeed");
-        Collector.HOLD_MOTOR_SPEED = SmartDashboard.getNumber("HoldSpeed");
-        Collector.MAX_ROTATE_MOTOR_SPEED = SmartDashboard.getNumber("RotateSpeed");
-        msg.printOnLn("Pot: " + collector.anglePot.getAverageValue(), DriverStationLCD.Line.kUser1);
-        operatorCollector();
-
-    }
-
-    
-    private void testCollectorMotors() {
+        Collector.COLLECT_MOTOR_SPEED = SmartDashboard.getNumber("CollectSpeed");       
+        msg.printOnLn("Pot: " + collector.anglePot.getAverageValue(), DriverStationLCD.Line.kUser2);
+        
         if(driveStick.getY() > 0.8) {
             collector.rotate(Collector.MAX_ROTATE_MOTOR_SPEED);
         } else if(driveStick.getY() < -0.8) {
@@ -255,9 +249,9 @@ public class Robot extends SimpleRobot {
             collector.stopRotating();
         }
         
-        if(driveStick.isButtonDown(RobotMap.TEST_COLLECT)) {
+        if(collectorStick.isButtonDown(RobotMap.COLLECTOR_COLLECT)) {
             collector.collect();
-        } else if(driveStick.isButtonDown(RobotMap.TEST_EJECT)) {
+        } else if(collectorStick.isButtonDown(RobotMap.COLLECTOR_EJECT)) {
             collector.eject();
         } else {
             collector.stopCollector();
@@ -267,21 +261,18 @@ public class Robot extends SimpleRobot {
         msg.printOnLn("" + Collector.COLLECT_MOTOR_SPEED, DriverStationLCD.Line.kUser4);
     }
 
-
     private void testCollectorPID() {
         double p = SmartDashboard.getNumber("KP", 0.06);
         double i = SmartDashboard.getNumber("KI", 0);
         double d = SmartDashboard.getNumber("KD", 0);
+        double setpoint = SmartDashboard.getNumber("Setpoint", 30);
         collector.pid.setKP(p);
         collector.pid.setKI(i);
-        collector.pid.setKD(d);
-        double angle = collectorStick.getZ(); // might be getThrottle() instead
-        angle = MathUtils.map(angle, -1, 1, 0, 90);
-        collector.setTargetAngle(angle);
+        collector.pid.setKD(d);        
+        collector.setTargetAngle(setpoint);
         collector.update();
-
-        msg.printOnLn("Set: " + angle, DriverStationLCD.Line.kUser2);
-        msg.printOnLn("Cur: " + collector.getCurrentAngle(), DriverStationLCD.Line.kUser3);
+        msg.printOnLn("Pot: " + collector.anglePot.getAverageValue(), DriverStationLCD.Line.kUser2);
+        msg.printOnLn("Cur: " + collector.getCurrentAngle(), DriverStationLCD.Line.kUser3);        
     }
 
     /*
