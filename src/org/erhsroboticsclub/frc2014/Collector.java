@@ -8,9 +8,9 @@ import org.erhsroboticsclub.frc2014.utilities.PIDControllerX2;
 public class Collector {
     
     private final Talon collectMotor, rotateMotor1, rotateMotor2;    
-    public static double COLLECT_MOTOR_SPEED = -.4;
+    public static double COLLECT_MOTOR_SPEED = .5;
     public static double HOLD_MOTOR_SPEED = 0;
-    public static double MAX_ROTATE_MOTOR_SPEED = 0.7;    
+    public static double MAX_ROTATE_MOTOR_SPEED = 0.25;    
     public final PIDControllerX2 pid;
     public final AnalogChannel anglePot;
     private static final double KP = 0, KI = 0, KD = 0;
@@ -49,7 +49,7 @@ public class Collector {
     public void rotate(double speed) {
         double scaledSpeed = MathUtils.map(speed, -1, 1, -MAX_ROTATE_MOTOR_SPEED, MAX_ROTATE_MOTOR_SPEED);
         rotateMotor1.set(scaledSpeed);
-        rotateMotor2.set(-scaledSpeed);          
+        rotateMotor2.set(scaledSpeed);          
     }
     
     public void stopRotating() {
@@ -68,6 +68,6 @@ public class Collector {
     public void update() {
         double out = pid.getPIDResponse(anglePot.getAverageVoltage());
         rotateMotor1.set(out);
-        rotateMotor2.set(-out);        
+        rotateMotor2.set(out);
     }
 }

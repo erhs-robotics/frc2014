@@ -7,13 +7,13 @@ package org.erhsroboticsclub.frc2014;
 public class RobotMap {
     
     // PWM Output
-    public static final int TOP_LEFT_MOTOR            = 1;
-    public static final int BOTTOM_LEFT_MOTOR         = 2;
-    public static final int TOP_RIGHT_MOTOR           = 3;
-    public static final int BOTTOM_RIGHT_MOTOR        = 4;    
-    public static final int COLLECTOR_COLLECT_MOTOR   = 8;
-    public static final int COLLECTOR_ROTATION_MOTOR1 = 9;
-    public static final int COLLECTOR_ROTATION_MOTOR2 = 10;
+    public static final int TOP_LEFT_MOTOR            = 4;
+    public static final int BOTTOM_LEFT_MOTOR         = 3;
+    public static final int TOP_RIGHT_MOTOR           = 2;
+    public static final int BOTTOM_RIGHT_MOTOR        = 1;    
+    public static final int COLLECTOR_COLLECT_MOTOR   = 10;
+    public static final int COLLECTOR_ROTATION_MOTOR1 = 8;
+    public static final int COLLECTOR_ROTATION_MOTOR2 = 9;
         
     // Digital Input    
     
@@ -26,8 +26,10 @@ public class RobotMap {
     public static final int DRIVE_JOYSTICK  = 1;
     public static final int COLLECTOR_STICK = 2;
     
-    // Drive Joystick Buttons    
-    public static final int DRIVE_STRAIGHT         = 2;
+    // Drive Joystick Buttons
+    public static final int SMOOTH_DRIVE       = 1;
+    public static final int DRIVE_STRAIGHT     = 2;
+    
     
     // Collector Joystick Buttons
     public static final int COLLECTOR_COLLECT  = 1;

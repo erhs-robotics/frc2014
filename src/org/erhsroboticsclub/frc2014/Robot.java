@@ -1,10 +1,12 @@
 package org.erhsroboticsclub.frc2014;
 
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.erhsroboticsclub.frc2014.utilities.JoystickX;
 import org.erhsroboticsclub.frc2014.utilities.MathUtils;
 import org.erhsroboticsclub.frc2014.utilities.Messenger;
+import org.erhsroboticsclub.frc2014.utilities.MovingAverage;
 import org.erhsroboticsclub.frc2014.utilities.PIDControllerX2;
 
 public class Robot extends SimpleRobot {
@@ -24,12 +26,14 @@ public class Robot extends SimpleRobot {
 
     // Utility classes
     Messenger msg;
+    MovingAverage smootherY, smootherX;
 
     // Constants
-    private static final long UPDATE_FREQ = 20;
-    private static final double AUTO_DRIVE_TIME = 0.8;
+    private static final long UPDATE_PERIOD = 20;
+    private static final double AUTO_DRIVE_TIME = 2.2;//0.8
     private static final int AUTO_DRIVE_SPEED = 1;
     private static double AUTO_BIAS = 2;
+    private static final int SMOOTHING_FACTOR = 50;
 
     public void robotInit() {
         // Subsystems        
@@ -38,8 +42,6 @@ public class Robot extends SimpleRobot {
                 new Talon(RobotMap.BOTTOM_LEFT_MOTOR),
                 new Talon(RobotMap.TOP_RIGHT_MOTOR),
                 new Talon(RobotMap.BOTTOM_RIGHT_MOTOR));
-        drive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
-        drive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
 
         // Joysticks
         driveStick = new JoystickX(RobotMap.DRIVE_JOYSTICK);
@@ -52,7 +54,10 @@ public class Robot extends SimpleRobot {
 
         // Utility classes
         msg = new Messenger();
+        smootherY = new MovingAverage(SMOOTHING_FACTOR);
+        smootherX = new MovingAverage(SMOOTHING_FACTOR);
 
+        LiveWindow.setEnabled(false);
         killSafety();
     }
 
@@ -92,7 +97,7 @@ public class Robot extends SimpleRobot {
             operatorDrive();
             operatorCollector();
 
-            while (System.currentTimeMillis() - startTime < UPDATE_FREQ);
+            while (System.currentTimeMillis() - startTime < UPDATE_PERIOD);
         }
     }
 
@@ -107,7 +112,25 @@ public class Robot extends SimpleRobot {
     // DRIVE                                                                  //
     ////////////////////////////////////////////////////////////////////////////
     public void driveWithJoystick() {
-        drive.arcadeDrive(driveStick);
+        if(driveStick.getRawButton(RobotMap.SMOOTH_DRIVE)) {
+            double driveX = -driveStick.getX();
+            double driveY = -driveStick.getY();
+            
+            if(MathUtils.sign(driveY) != MathUtils.sign(smootherY.evaluate())) {
+                smootherY.clear();
+            }
+            
+            if(MathUtils.sign(driveX) != MathUtils.sign(smootherX.evaluate())) {
+                smootherX.clear();
+            }
+            smootherY.add(-driveStick.getY());
+            smootherX.add(-driveStick.getX());            
+            drive.arcadeDrive(smootherY.evaluate(), smootherX.evaluate());
+        } else {
+            //double y = MathUtils.map(-driveStick.getY(), -1, 1, -.8, 0.8);
+            //double x = MathUtils.map(-driveStick.getX(), -1, 1, -.8, .8);
+            drive.arcadeDrive(-driveStick.getY(), -driveStick.getX());
+        }
     }
 
     public void driveStraight(double speed, double targetAngle, double bias) {
@@ -122,7 +145,8 @@ public class Robot extends SimpleRobot {
             gyro.reset();
         }
         if (driveStick.getRawButton(RobotMap.DRIVE_STRAIGHT)) {
-            driveStraight(driveStick.getY(), 0, 0);
+            smootherY.add(-driveStick.getY());
+            driveStraight(smootherY.evaluate(), 0, 0);
             System.out.println("Driving with PID");
         } else {
             driveWithJoystick();
@@ -199,7 +223,7 @@ public class Robot extends SimpleRobot {
                     testCollectorPID();
                     break;
             }
-            while (System.currentTimeMillis() - startTime < UPDATE_FREQ);
+            while (System.currentTimeMillis() - startTime < UPDATE_PERIOD);
         }
     }
 
@@ -238,13 +262,17 @@ public class Robot extends SimpleRobot {
     }
 
     private void testCollector() {
-        Collector.COLLECT_MOTOR_SPEED = SmartDashboard.getNumber("CollectSpeed");       
-        msg.printOnLn("Pot: " + collector.anglePot.getAverageValue(), DriverStationLCD.Line.kUser2);
+        //Collector.COLLECT_MOTOR_SPEED = SmartDashboard.getNumber("CollectSpeed", 0.7);
         
-        if(driveStick.getY() > 0.8) {
-            collector.rotate(Collector.MAX_ROTATE_MOTOR_SPEED);
-        } else if(driveStick.getY() < -0.8) {
-            collector.rotate(-Collector.MAX_ROTATE_MOTOR_SPEED);
+        msg.printOnLn("Pot: " + collector.anglePot.getAverageVoltage(), DriverStationLCD.Line.kUser2);
+        
+        if(collectorStick.getY() > 0.8) {
+            collector.rotate(1); // down
+             msg.printOnLn("greater .8", DriverStationLCD.Line.kUser3);
+            
+        } else if(collectorStick.getY() < -0.8) {
+            collector.rotate(-1);// up
+            msg.printOnLn("less -.8", DriverStationLCD.Line.kUser3);
         } else {
             collector.stopRotating();
         }
@@ -257,7 +285,7 @@ public class Robot extends SimpleRobot {
             collector.stopCollector();
         }   
         
-        Collector.COLLECT_MOTOR_SPEED = driveStick.getThrottle();
+        //Collector.COLLECT_MOTOR_SPEED = driveStick.getThrottle();
         msg.printOnLn("" + Collector.COLLECT_MOTOR_SPEED, DriverStationLCD.Line.kUser4);
     }
 
@@ -267,11 +295,11 @@ public class Robot extends SimpleRobot {
         double d = SmartDashboard.getNumber("KD", 0);
         double setpoint = SmartDashboard.getNumber("Setpoint", 30);
         collector.pid.setKP(p);
-        collector.pid.setKI(i);
+        collector.pid.setKI(i);        
         collector.pid.setKD(d);        
         collector.setTargetAngle(setpoint);
         collector.update();
-        msg.printOnLn("Pot: " + collector.anglePot.getAverageValue(), DriverStationLCD.Line.kUser2);
+        msg.printOnLn("Pot: " + collector.anglePot.getAverageVoltage(), DriverStationLCD.Line.kUser2);
         msg.printOnLn("Cur: " + collector.getCurrentAngle(), DriverStationLCD.Line.kUser3);        
     }
 
